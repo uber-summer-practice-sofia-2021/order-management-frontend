@@ -3,18 +3,18 @@ import React from 'react';
 class NameField extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: "" };
+        this.state = { firstName: "", lastName: "" };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
-        this.setState({ value: event.target.value });
+    handleChange(event, field) {
+        this.setState({ [field]: event.target.value });
     }
 
     handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
+        alert('A name was submitted: ' + this.state.firstName + " " + this.state.lastName);
         event.preventDefault();
     }
 
@@ -22,8 +22,12 @@ class NameField extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <label>
-                    Name:
-                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    First Name:
+                    <input type="text" value={this.state.firstName} onChange={(event) => this.handleChange(event, "firstName")} />
+                </label>
+                <label>
+                    Last Name:
+                    <input type="text" value={this.state.lastName} onChange={(event) => this.handleChange(event, "lastName")} />
                 </label>
                 <input type="submit" value="Submit" />
             </form>
