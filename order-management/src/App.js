@@ -1,11 +1,14 @@
 import './App.css';
-import NameField from './components/NameField'
+import Combine from './components/Combine';
+
+
+
 
 function App() {
   return (
     <div className="App">
       <h1>HELLO</h1>
-      <NameField />
+      <Combine />
     </div>
   );
 }
