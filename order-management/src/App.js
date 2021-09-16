@@ -1,5 +1,5 @@
 import './App.css';
-import Combine from './components/Combine';
+import OrderSubmitForm from './components/OrderSubmitForm';
 
 
 
@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="App">
       <h1>HELLO</h1>
-      <Combine />
+      <OrderSubmitForm />
     </div>
   );
 }
