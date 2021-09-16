@@ -1,6 +1,7 @@
 import React from "react";
 import TextClass from "./TextClass";
 import Error from "./Error"
+import validator from 'validator';
 
 class OrderSubmitForm extends React.Component {
     constructor(props) {
@@ -13,7 +14,7 @@ class OrderSubmitForm extends React.Component {
             emailError: "",
             phoneError: "",
             isValid: false,
-
+            disabled: true
         }
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
@@ -22,7 +23,7 @@ class OrderSubmitForm extends React.Component {
 
 
     validate = () => {
-        this.setState({ isValid: true });
+        this.setState({ isValid: true, disabled: false });
 
         let nameError = "";
         let emailError = "";
@@ -32,24 +33,21 @@ class OrderSubmitForm extends React.Component {
             nameError = "invalid name";
         }
 
-        if (!this.state.email.includes('@')) {
+        if (!validator.isEmail(this.state.email)) {
             emailError = "invalid email";
         }
 
-        var phoneValidationForm = /^\0?([0-9]{9})\)$/;
-        if (!this.state.phone.match(phoneValidationForm)) {
+        if (!validator.isMobilePhone(this.state.phone)) {
             phoneError = "invalid phone number";
         }
 
-        if (nameError) {
-            this.setState({ nameError: nameError, isValid: false });
-        }
-        if (emailError) {
-            this.setState({ emailError: emailError, isValid: false });
-        }
-        if (phoneError) {
-            this.setState({ phoneError: phoneError, isValid: false });
-        }
+
+        this.setState({ nameError: nameError, isValid: !nameError, disabled: nameError });
+
+        this.setState({ emailError: emailError, isValid: !emailError, disabled: emailError });
+
+        this.setState({ phoneError: phoneError, isValid: !phoneError, disabled: phoneError });
+
 
 
     }
@@ -58,44 +56,45 @@ class OrderSubmitForm extends React.Component {
         this.setState({
             name: arg
         })
+        this.validate();
     }
 
     emailHandler = arg => {
         this.setState({
             email: arg
         })
+        this.validate();
     }
 
     phoneHandler = arg => {
         this.setState({
             phone: arg
         })
+        this.validate();
     }
 
     handleSubmit = event => {
-       /* this.validate();
-        if (!this.state.isValid) {
-            console.log("wrong");
-            alert("Wrong input data. Please re-enter the data!");
-            return;
-        }*/
         event.preventDefault();
+        alert(this.state);
         console.log(this.state);
+        return true;
     };
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit="return this.handleSubmit();">
 
                 <TextClass value={this.state.name} fieldName={"name"} handler={this.nameHandler.bind(this)} />
                 <Error props={this.state.nameError} />
+
                 <TextClass value={this.state.email} fieldName={"email"} handler={this.emailHandler.bind(this)} />
                 <Error props={this.state.emailError} />
+
                 <TextClass value={this.state.phone} fieldName={"phone"} handler={this.phoneHandler.bind(this)} />
                 <Error props={this.state.phoneError} />
 
-                <input type="submit" />
-            </form>
+                <button type="submit" disabled={this.state.disabled} >Submit </button>
+            </form >
         )
     }
 }
