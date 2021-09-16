@@ -10,7 +10,7 @@ function TextClass({value, fieldName, handler }) {
                 defaultValue={value}
                 onChange={(event) => {
                     const newValue = event.target.value;
-                    handler({ newValue })
+                    handler(newValue)
                 }}
                 name={fieldName}
 
