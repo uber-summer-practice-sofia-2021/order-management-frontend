@@ -10,15 +10,28 @@ class OrderSubmitForm extends React.Component {
             name: "",
             email: "",
             phone: "",
+            length: 0,
+            height: 0,
+            width: 0,
+            weight: 0,
             nameError: "",
             emailError: "",
             phoneError: "",
+            lengthError: "",
+            heightError: "",
+            widthError: "",
+            weightError: "",
             isValid: false,
             disabled: true
         }
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
         this.phoneHandler = this.phoneHandler.bind(this);
+
+        this.lengthHandler = this.lengthHandler.bind(this);
+        this.heightHandler = this.heightHandler.bind(this);
+        this.widthHandler = this.widthHandler.bind(this);
+        this.weightHandler = this.weightHandler.bind(this);
     }
 
 
@@ -28,6 +41,10 @@ class OrderSubmitForm extends React.Component {
         let nameError = "";
         let emailError = "";
         let phoneError = "";
+        let lengthError = "";
+        let heightError = "";
+        let widthError = "";
+        let weightError = "";
 
         if (!/^[A-Za-z ]+$/.test(this.state.name)) {
             nameError = "invalid name";
@@ -42,12 +59,16 @@ class OrderSubmitForm extends React.Component {
         }
 
 
-        this.setState({ nameError: nameError, isValid: !nameError, disabled: nameError });
+        this.setState({ nameError: nameError });
+        this.setState({ emailError: emailError });
+        this.setState({ phoneError: phoneError });
+        this.setState({ lengthError: lengthError });
+        this.setState({ heightError: heightError });
+        this.setState({ widthError: widthError });
+        this.setState({ weightError: weightError });
 
-        this.setState({ emailError: emailError, isValid: !emailError, disabled: emailError });
-
-        this.setState({ phoneError: phoneError, isValid: !phoneError, disabled: phoneError });
-
+        this.setState({ isValid: !(nameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
+        this.setState({ disabled: !this.state.isValid });
 
 
     }
@@ -73,6 +94,34 @@ class OrderSubmitForm extends React.Component {
         this.validate();
     }
 
+    lengthHandler = arg => {
+        this.setState({
+            length: arg
+        })
+        this.validate();
+    }
+
+    heightHandler = arg => {
+        this.setState({
+            height: arg
+        })
+        this.validate();
+    }
+
+    widthHandler = arg => {
+        this.setState({
+            width: arg
+        })
+        this.validate();
+    }
+
+    weightHandler = arg => {
+        this.setState({
+            weight: arg
+        })
+        this.validate();
+    }
+
     handleSubmit = event => {
         event.preventDefault();
         alert(this.state);
@@ -92,6 +141,20 @@ class OrderSubmitForm extends React.Component {
 
                 <TextClass value={this.state.phone} fieldName={"phone"} handler={this.phoneHandler.bind(this)} />
                 <Error props={this.state.phoneError} />
+
+                <TextClass value={this.state.length} fieldName={"length"} handler={this.lengthHandler.bind(this)} />
+                <Error props={this.state.lengthError} />
+
+
+
+                <TextClass value={this.state.height} fieldName={"height"} handler={this.heightHandler.bind(this)} />
+                <Error props={this.state.heightError} />
+
+                <TextClass value={this.state.width} fieldName={"width"} handler={this.widthHandler.bind(this)} />
+                <Error props={this.state.widthError} />
+
+                <TextClass value={this.state.weight} fieldName={"weight"} handler={this.weightHandler.bind(this)} />
+                <Error props={this.state.weightError} />
 
                 <button type="submit" disabled={this.state.disabled} >Submit </button>
             </form >

@@ -1,10 +1,10 @@
 import React from 'react';
 
-function TextClass({value, fieldName, handler }) {
+function TextClass({ value, fieldName, handler }) {
 
     return (
         <label>
-
+            {fieldName}:
             <input
                 type="text"
                 defaultValue={value}

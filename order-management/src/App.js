@@ -7,7 +7,7 @@ import OrderSubmitForm from './components/OrderSubmitForm';
 function App() {
   return (
     <div className="App">
-      <h1>HELLO</h1>
+      <h1>ORDER</h1>
       <OrderSubmitForm />
     </div>
   );
