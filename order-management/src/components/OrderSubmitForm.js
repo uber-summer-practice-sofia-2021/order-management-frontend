@@ -39,10 +39,10 @@ class OrderSubmitForm extends React.Component {
             disabled: true,
             tags: [
                 {
-                    name: 'fragile'
+                    name: 'Fragile'
                 },
                 {
-                    name: 'dangerous'
+                    name: 'Dangerous'
                 }
             ],
             selected: [],
@@ -265,7 +265,7 @@ class OrderSubmitForm extends React.Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        alert(this.state);
+        // alert(this.state);
         console.log(this.state);
         return true;
     };
@@ -287,13 +287,13 @@ class OrderSubmitForm extends React.Component {
         return (
             <form onSubmit={(e) => { this.handleSubmit(e) }}>
 
-                <TextClass value={this.state.name} fieldName={"name"} handler={this.nameHandler.bind(this)} />
+                <TextClass value={this.state.name} fieldName={"Name"} handler={this.nameHandler.bind(this)} />
                 <Error props={this.state.nameError} />
 
-                <TextClass value={this.state.email} fieldName={"email"} handler={this.emailHandler.bind(this)} />
+                <TextClass value={this.state.email} fieldName={"Email"} handler={this.emailHandler.bind(this)} />
                 <Error props={this.state.emailError} />
 
-                <TextClass value={this.state.phone} fieldName={"phone"} handler={this.phoneHandler.bind(this)} />
+                <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)} />
                 <Error props={this.state.phoneError} />
 
 
@@ -335,16 +335,16 @@ class OrderSubmitForm extends React.Component {
                 </table>
 
 
-                <TextClass value={this.state.length} fieldName={"length"} handler={this.lengthHandler.bind(this)} />
+                <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)} />
                 <Error props={this.state.lengthError} />
 
-                <TextClass value={this.state.height} fieldName={"height"} handler={this.heightHandler.bind(this)} />
+                <TextClass value={this.state.height} fieldName={"Height"} handler={this.heightHandler.bind(this)} />
                 <Error props={this.state.heightError} />
 
-                <TextClass value={this.state.width} fieldName={"width"} handler={this.widthHandler.bind(this)} />
+                <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)} />
                 <Error props={this.state.widthError} />
 
-                <TextClass value={this.state.weight} fieldName={"weight"} handler={this.weightHandler.bind(this)} />
+                <TextClass value={this.state.weight} fieldName={"Weight"} handler={this.weightHandler.bind(this)} />
                 <Error props={this.state.weightError} />
 
                 {/*<CheckBox checkbox={this.state.isFragile} fieldName={"Fragile"} handler={this.isFragileHandler.bind(this)} />*/}
@@ -367,7 +367,7 @@ class OrderSubmitForm extends React.Component {
                 }
                 <br/>
 
-                <RadioButton radio={this.state.radio} fieldName={"DeliveryType"} handler={this.deliveryTypeHandler.bind(this)} />
+                <RadioButton radio={this.state.radio} fieldName={"Delivery Type"} handler={this.deliveryTypeHandler.bind(this)} />
 
                 <button type="submit" disabled={this.state.disabled} >Submit </button>
             </form >
