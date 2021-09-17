@@ -11,6 +11,12 @@ class OrderSubmitForm extends React.Component {
             name: "",
             email: "",
             phone: "",
+            fromLatitude: "0.0",
+            fromLongitude: "0.0",
+            fromAddressName: "",
+            toLatitude: "0.0",
+            toLongitude: "0.0",
+            toAddressName: "",
             length: "0",
             height: "0",
             width: "0",
@@ -18,6 +24,12 @@ class OrderSubmitForm extends React.Component {
             nameError: "",
             emailError: "",
             phoneError: "",
+            fromLatitudeError: "",
+            fromLongitudeError: "",
+            fromAddressNameError: "",
+            toLatitudeError: "",
+            toLongitudeError: "",
+            toAddressNameError: "",
             lengthError: "",
             heightError: "",
             widthError: "",
@@ -29,6 +41,14 @@ class OrderSubmitForm extends React.Component {
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
         this.phoneHandler = this.phoneHandler.bind(this);
+
+        this.fromLatitudeHandler = this.fromLatitudeHandler.bind(this);
+        this.fromLongitudeHandler = this.fromLongitudeHandler.bind(this);
+        this.fromAddressNameHandler = this.fromAddressNameHandler.bind(this);
+
+        this.toLatitudeHandler = this.toLatitudeHandler.bind(this);
+        this.toLongitudeHandler = this.toLongitudeHandler.bind(this);
+        this.toAddressNameHandler = this.toAddressNameHandler.bind(this);
 
         this.lengthHandler = this.lengthHandler.bind(this);
         this.heightHandler = this.heightHandler.bind(this);
@@ -44,6 +64,12 @@ class OrderSubmitForm extends React.Component {
         let nameError = "";
         let emailError = "";
         let phoneError = "";
+        let fromLatitudeError = "";
+        let fromLongitudeError = "";
+        let fromAddressNameError = "";
+        let toLatitudeError = "";
+        let toLongitudeError = "";
+        let toAddressNameError = "";
         let lengthError = "";
         let heightError = "";
         let widthError = "";
@@ -59,6 +85,30 @@ class OrderSubmitForm extends React.Component {
 
         if (!validator.isMobilePhone(this.state.phone)) {
             phoneError = "invalid phone number";
+        }
+
+        if (!validator.isNumeric(this.state.fromLatitude)) {
+            fromLatitudeError = "invalid latitude";
+        }
+
+        if (!validator.isNumeric(this.state.fromLongitude)) {
+            fromLongitudeError = "invalid longitude";
+        }
+
+        if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
+            fromAddressNameError = "invalid address name";
+        }
+
+        if (!validator.isNumeric(this.state.toLatitude)) {
+            toLatitudeError = "invalid latitude";
+        }
+
+        if (!validator.isNumeric(this.state.toLongitude)) {
+            toLongitudeError = "invalid longitude";
+        }
+
+        if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
+            toAddressNameError = "invalid address name";
         }
 
         if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
@@ -81,12 +131,20 @@ class OrderSubmitForm extends React.Component {
         this.setState({ nameError: nameError });
         this.setState({ emailError: emailError });
         this.setState({ phoneError: phoneError });
+        this.setState({ fromLatitudeError: fromLatitudeError });
+        this.setState({ fromLongitudeError: fromLongitudeError });
+        this.setState({ fromAddressNameError: fromAddressNameError });
+        this.setState({ toLatitudeError: toLatitudeError });
+        this.setState({ toLongitudeError: toLongitudeError });
+        this.setState({ toAddressNameError: toAddressNameError });
         this.setState({ lengthError: lengthError });
         this.setState({ heightError: heightError });
         this.setState({ widthError: widthError });
         this.setState({ weightError: weightError });
 
-        this.setState({ isValid: !(nameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
+
+
+        this.setState({ isValid: !(nameError || fromLatitudeError || fromLongitudeError || fromAddressNameError || toLatitudeError || toLongitudeError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
         this.setState({ disabled: !this.state.isValid });
 
 
@@ -112,6 +170,51 @@ class OrderSubmitForm extends React.Component {
         })
         this.validate();
     }
+
+
+    fromLatitudeHandler = arg => {
+        this.setState({
+            fromLatitude: arg
+        })
+        this.validate();
+    }
+
+    fromLongitudeHandler = arg => {
+        this.setState({
+            fromLongitude: arg
+        })
+        this.validate();
+    }
+
+    fromAddressNameHandler = arg => {
+        this.setState({
+            fromAddressName: arg
+        })
+        this.validate();
+    }
+
+    toLatitudeHandler = arg => {
+        this.setState({
+            toLatitude: arg
+        })
+        this.validate();
+    }
+
+    toLongitudeHandler = arg => {
+        this.setState({
+            toLongitude: arg
+        })
+        this.validate();
+    }
+
+    toAddressNameHandler = arg => {
+        this.setState({
+            toAddressName: arg
+        })
+        this.validate();
+    }
+
+
 
     lengthHandler = arg => {
         this.setState({
@@ -142,7 +245,7 @@ class OrderSubmitForm extends React.Component {
     }
 
     deliveryTypeHandler = arg => {
-        this.setState( {
+        this.setState({
             radio: arg
         })
     }
@@ -150,14 +253,13 @@ class OrderSubmitForm extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
         alert(this.state);
-        <Fetch/>
         console.log(this.state);
         return true;
     };
 
     render() {
         return (
-            <form onSubmit={(e) => {this.handleSubmit(e)}}>
+            <form onSubmit={(e) => { this.handleSubmit(e) }}>
 
                 <TextClass value={this.state.name} fieldName={"name"} handler={this.nameHandler.bind(this)} />
                 <Error props={this.state.nameError} />
@@ -167,6 +269,45 @@ class OrderSubmitForm extends React.Component {
 
                 <TextClass value={this.state.phone} fieldName={"phone"} handler={this.phoneHandler.bind(this)} />
                 <Error props={this.state.phoneError} />
+
+
+                <table align="center" border="1">
+                    <tr>
+                        <td><label type="text">From Address</label></td>
+                        <td><label type="text">To Address</label></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <TextClass value={this.state.fromLatitude} fieldName={"latitude"} handler={this.fromLatitudeHandler.bind(this)} />
+                            <Error props={this.state.fromLatitudeError} />
+                        </td>
+                        <td>
+                            <TextClass value={this.state.toLatitude} fieldName={"latitude"} handler={this.toLatitudeHandler.bind(this)} />
+                            <Error props={this.state.toLatitudeError} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <TextClass value={this.state.fromLongitude} fieldName={"longitude"} handler={this.fromLongitudeHandler.bind(this)} />
+                            <Error props={this.state.fromLongitudeError} />
+                        </td>
+                        <td>
+                            <TextClass value={this.state.toLongitude} fieldName={"longitude"} handler={this.toLongitudeHandler.bind(this)} />
+                            <Error props={this.state.toLongitudeError} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <TextClass value={this.state.fromAddressName} fieldName={"address"} handler={this.fromAddressNameHandler.bind(this)} />
+                            <Error props={this.state.fromAddressNameError} />
+                        </td>
+                        <td>
+                            <TextClass value={this.state.toAddressName} fieldName={"address"} handler={this.toAddressNameHandler.bind(this)} />
+                            <Error props={this.state.toAddressNameError} />
+                        </td>
+                    </tr>
+                </table>
+
 
                 <TextClass value={this.state.length} fieldName={"length"} handler={this.lengthHandler.bind(this)} />
                 <Error props={this.state.lengthError} />
@@ -203,7 +344,7 @@ const Fetch = () => {
        
            fetchData();
  */
-           const requestOptions = {
+        const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: {
