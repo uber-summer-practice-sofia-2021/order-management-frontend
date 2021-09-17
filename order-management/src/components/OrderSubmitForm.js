@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TextClass from "./TextClass";
 import Error from "./Error"
 import validator from 'validator';
@@ -141,6 +141,7 @@ class OrderSubmitForm extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
         alert(this.state);
+        <Fetch/>
         console.log(this.state);
         return true;
     };
@@ -161,8 +162,6 @@ class OrderSubmitForm extends React.Component {
                 <TextClass value={this.state.length} fieldName={"length"} handler={this.lengthHandler.bind(this)} />
                 <Error props={this.state.lengthError} />
 
-
-
                 <TextClass value={this.state.height} fieldName={"height"} handler={this.heightHandler.bind(this)} />
                 <Error props={this.state.heightError} />
 
@@ -177,5 +176,58 @@ class OrderSubmitForm extends React.Component {
         )
     }
 }
+
+const Fetch = () => {
+    useEffect(() => {
+        /* const url = "https://api.adviceslip.com/advice"
+ 
+         const fetchData = async () => {
+             try {
+               const response = await fetch(url);
+               const json = await response.json();
+               console.log(json);
+             } catch (error) {
+               console.log("error", error);
+             }
+           };
+       
+           fetchData();
+ */
+           const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: {
+                "clientName": "John Smith",
+                "from": {
+                    "latitude": 1,
+                    "longitude": 2,
+                    "addressName": "Mladost 5, Sofia"
+                },
+                "to": {
+                    "latitude": 4,
+                    "longitude": 5,
+                    "addressName": "Mladost 1, Sofia"
+                },
+                "clientEmail": "jsmith@mail.bg",
+                "phoneNumber": "0894546512",
+                "length": 5,
+                "depth": 2,
+                "height": 3,
+                "weight": 9,
+                "tags": [
+                    "DANGEROUS",
+                    "FRAGILE"
+                ],
+                "deliveryType": "STANDARD"
+            }
+
+        };
+        fetch('https://localhost:8080/orders', requestOptions)
+            .then(response => response.json());
+        //.then(data => setPostId(data.id));
+    }, []);
+
+    return <div></div>;
+};
 
 export default OrderSubmitForm
