@@ -3,6 +3,7 @@ import TextClass from "./TextClass";
 import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
+// import CheckBox from "./CheckBox";
 
 class OrderSubmitForm extends React.Component {
     constructor(props) {
@@ -36,6 +37,15 @@ class OrderSubmitForm extends React.Component {
             weightError: "",
             isValid: false,
             disabled: true,
+            tags: [
+                {
+                    name: 'fragile'
+                },
+                {
+                    name: 'dangerous'
+                }
+            ],
+            selected: [],
             radio: "standard"
         }
         this.nameHandler = this.nameHandler.bind(this);
@@ -56,6 +66,8 @@ class OrderSubmitForm extends React.Component {
         this.weightHandler = this.weightHandler.bind(this);
 
         this.deliveryTypeHandler = this.deliveryTypeHandler.bind(this)
+
+        this.tagsHandler = this.tagsHandler.bind(this);
     }
 
     validate = () => {
@@ -250,12 +262,26 @@ class OrderSubmitForm extends React.Component {
         })
     }
 
+
     handleSubmit = event => {
         event.preventDefault();
         alert(this.state);
         console.log(this.state);
         return true;
     };
+
+    tagsHandler(name) {
+        let selected = this.state.selected
+        let find = selected.indexOf(name)
+
+        if(find > -1) {
+            selected.splice(find, 1)
+        } else {
+            selected.push(name)
+        }
+
+        this.setState({ selected })
+    }
 
     render() {
         return (
@@ -321,7 +347,28 @@ class OrderSubmitForm extends React.Component {
                 <TextClass value={this.state.weight} fieldName={"weight"} handler={this.weightHandler.bind(this)} />
                 <Error props={this.state.weightError} />
 
+                {/*<CheckBox checkbox={this.state.isFragile} fieldName={"Fragile"} handler={this.isFragileHandler.bind(this)} />*/}
+                {/*<CheckBox checkbox={this.state.isDangerous} fieldName={"Dangerous"} handler={this.isDangerousHandler.bind(this)} />*/}
+                {/*<br/>*/}
+                {/*{*/}
+
+                {
+                    this.state.tags.map(item => {
+                        return (
+                            <label key={ item.name }>
+                                <input
+                                    type="checkbox"
+                                    onChange={() => this.tagsHandler(item.name)}
+                                    selected={this.state.selected.includes(item.name)}/>
+                                <span>{ item.name }</span>
+                            </label>
+                        )
+                    })
+                }
+                <br/>
+
                 <RadioButton radio={this.state.radio} fieldName={"DeliveryType"} handler={this.deliveryTypeHandler.bind(this)} />
+
                 <button type="submit" disabled={this.state.disabled} >Submit </button>
             </form >
         )
