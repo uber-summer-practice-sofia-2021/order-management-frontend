@@ -1,6 +1,7 @@
 import React from "react";
 import TextClass from "./TextClass";
 import Error from "./Error"
+import RadioButton from "./RadioButton"
 import validator from 'validator';
 
 class OrderSubmitForm extends React.Component {
@@ -22,7 +23,8 @@ class OrderSubmitForm extends React.Component {
             widthError: "",
             weightError: "",
             isValid: false,
-            disabled: true
+            disabled: true,
+            radio: "standard"
         }
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
@@ -32,8 +34,9 @@ class OrderSubmitForm extends React.Component {
         this.heightHandler = this.heightHandler.bind(this);
         this.widthHandler = this.widthHandler.bind(this);
         this.weightHandler = this.weightHandler.bind(this);
-    }
 
+        this.deliveryTypeHandler = this.deliveryTypeHandler.bind(this)
+    }
 
     validate = () => {
         this.setState({ isValid: true, disabled: false });
@@ -122,6 +125,12 @@ class OrderSubmitForm extends React.Component {
         this.validate();
     }
 
+    deliveryTypeHandler = arg => {
+        this.setState( {
+            radio: arg
+        })
+    }
+
     handleSubmit = event => {
         event.preventDefault();
         alert(this.state);
@@ -131,7 +140,7 @@ class OrderSubmitForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit="return this.handleSubmit();">
+            <form onSubmit={(e) => {this.handleSubmit(e)}}>
 
                 <TextClass value={this.state.name} fieldName={"name"} handler={this.nameHandler.bind(this)} />
                 <Error props={this.state.nameError} />
@@ -145,8 +154,6 @@ class OrderSubmitForm extends React.Component {
                 <TextClass value={this.state.length} fieldName={"length"} handler={this.lengthHandler.bind(this)} />
                 <Error props={this.state.lengthError} />
 
-
-
                 <TextClass value={this.state.height} fieldName={"height"} handler={this.heightHandler.bind(this)} />
                 <Error props={this.state.heightError} />
 
@@ -156,6 +163,7 @@ class OrderSubmitForm extends React.Component {
                 <TextClass value={this.state.weight} fieldName={"weight"} handler={this.weightHandler.bind(this)} />
                 <Error props={this.state.weightError} />
 
+                <RadioButton radio={this.state.radio} fieldName={"DeliveryType"} handler={this.deliveryTypeHandler.bind(this)} />
                 <button type="submit" disabled={this.state.disabled} >Submit </button>
             </form >
         )
