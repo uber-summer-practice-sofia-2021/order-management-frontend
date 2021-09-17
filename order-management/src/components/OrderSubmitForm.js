@@ -10,10 +10,10 @@ class OrderSubmitForm extends React.Component {
             name: "",
             email: "",
             phone: "",
-            length: 0,
-            height: 0,
-            width: 0,
-            weight: 0,
+            length: "0",
+            height: "0",
+            width: "0",
+            weight: "0",
             nameError: "",
             emailError: "",
             phoneError: "",
@@ -56,6 +56,22 @@ class OrderSubmitForm extends React.Component {
 
         if (!validator.isMobilePhone(this.state.phone)) {
             phoneError = "invalid phone number";
+        }
+
+        if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
+            lengthError = "invalid length";
+        }
+
+        if (!validator.isNumeric(this.state.height) || this.state.height <= 0) {
+            heightError = "invalid height";
+        }
+
+        if (!validator.isNumeric(this.state.width) || this.state.width <= 0) {
+            widthError = "invalid width";
+        }
+
+        if (!validator.isNumeric(this.state.weight) || this.state.weight <= 0) {
+            weightError = "invalid weight";
         }
 
 
