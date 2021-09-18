@@ -39,10 +39,10 @@ class OrderSubmitForm extends React.Component {
             disabled: true,
             tags: [
                 {
-                    name: 'Fragile'
+                    name: 'FRAGILE'
                 },
                 {
-                    name: 'Dangerous'
+                    name: 'DANGEROUS'
                 }
             ],
             selected: [],
@@ -139,7 +139,6 @@ class OrderSubmitForm extends React.Component {
             weightError = "invalid weight";
         }
 
-
         this.setState({ nameError: nameError });
         this.setState({ emailError: emailError });
         this.setState({ phoneError: phoneError });
@@ -154,12 +153,8 @@ class OrderSubmitForm extends React.Component {
         this.setState({ widthError: widthError });
         this.setState({ weightError: weightError });
 
-
-
         this.setState({ isValid: !(nameError || fromLatitudeError || fromLongitudeError || fromAddressNameError || toLatitudeError || toLongitudeError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
         this.setState({ disabled: !this.state.isValid });
-
-
     }
 
     nameHandler = arg => {
@@ -182,7 +177,6 @@ class OrderSubmitForm extends React.Component {
         })
         this.validate();
     }
-
 
     fromLatitudeHandler = arg => {
         this.setState({
@@ -226,8 +220,6 @@ class OrderSubmitForm extends React.Component {
         this.validate();
     }
 
-
-
     lengthHandler = arg => {
         this.setState({
             length: arg
@@ -262,11 +254,39 @@ class OrderSubmitForm extends React.Component {
         })
     }
 
-
     handleSubmit = event => {
         event.preventDefault();
-        // alert(this.state);
-        console.log(this.state);
+
+        let orderInfo = {
+            clientName: this.state.name,
+            from: {
+                latitude: this.state.fromLatitude,
+                longitude: this.state.fromLongitude,
+                addressName: this.state.fromAddressName
+            },
+            to: {
+                latitude: this.state.toLatitude,
+                longitude: this.state.toLongitude,
+                addressName: this.state.toAddressName
+            },
+            clientEmail: this.state.email,
+            phoneNumber: this.state.phone,
+            length: this.state.length,
+            width: this.state.width,
+            height: this.state.height,
+            weight: this.state.weight,
+            tags: this.state.selected,
+            deliveryType: this.state.radio.toUpperCase()
+
+        }
+
+        const response = fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderInfo),
+        }).then(r => console.log(r));
         return true;
     };
 
@@ -374,58 +394,5 @@ class OrderSubmitForm extends React.Component {
         )
     }
 }
-
-const Fetch = () => {
-    useEffect(() => {
-        /* const url = "https://api.adviceslip.com/advice"
- 
-         const fetchData = async () => {
-             try {
-               const response = await fetch(url);
-               const json = await response.json();
-               console.log(json);
-             } catch (error) {
-               console.log("error", error);
-             }
-           };
-       
-           fetchData();
- */
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: {
-                "clientName": "John Smith",
-                "from": {
-                    "latitude": 1,
-                    "longitude": 2,
-                    "addressName": "Mladost 5, Sofia"
-                },
-                "to": {
-                    "latitude": 4,
-                    "longitude": 5,
-                    "addressName": "Mladost 1, Sofia"
-                },
-                "clientEmail": "jsmith@mail.bg",
-                "phoneNumber": "0894546512",
-                "length": 5,
-                "depth": 2,
-                "height": 3,
-                "weight": 9,
-                "tags": [
-                    "DANGEROUS",
-                    "FRAGILE"
-                ],
-                "deliveryType": "STANDARD"
-            }
-
-        };
-        fetch('https://localhost:8080/orders', requestOptions)
-            .then(response => response.json());
-        //.then(data => setPostId(data.id));
-    }, []);
-
-    return <div></div>;
-};
 
 export default OrderSubmitForm
