@@ -3,6 +3,7 @@ import TextClass from "./TextClass";
 import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
+import swal from 'sweetalert';
 // import CheckBox from "./CheckBox";
 
 class OrderSubmitForm extends React.Component {
@@ -277,16 +278,29 @@ class OrderSubmitForm extends React.Component {
             weight: this.state.weight,
             tags: this.state.selected,
             deliveryType: this.state.radio.toUpperCase()
-
         }
 
+        let result = false;
         const response = fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(orderInfo),
-        }).then(r => console.log(r));
+        }).then(r => r.ok == true ? swal({
+            title: "Your order was created!",
+            text: "Thank you for choosing Uber!",
+            icon: "success",
+            buttons: {
+                cancel: "See order info",
+                ok: true,
+            },
+        }).then((value) => {
+            if(value == null) {
+                swal("Order info here");
+            }
+        }) : swal("Oh no!", "There is a problem with your order", "error") );
+
         return true;
     };
 
