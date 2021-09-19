@@ -1,13 +1,12 @@
 import './App.css';
 import OrderSubmitForm from './components/OrderSubmitForm';
 
-
-
-
 function App() {
   return (
     <div className="App">
-      <h1>ORDER</h1>
+      <nav class="logo-line">
+		    <labal class="logo">UBER</labal>
+		  </nav>
       <OrderSubmitForm />
     </div>
   );
