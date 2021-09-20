@@ -4,11 +4,8 @@ import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
 import Typography from "@material-ui/core/Typography";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers";
 import { MainContainer } from "./MainContainer";
 import { Form } from "./Form";
-import { Input } from "./Input";
 import Button from "@material-ui/core/Button";
 import Table from "./Table";
 // import CheckBox from "./CheckBox";
