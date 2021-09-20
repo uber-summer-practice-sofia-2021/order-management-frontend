@@ -1,7 +1,16 @@
 import React from "react";
 
-export default function Error({props}) {
+
+export default function Error({ props }) {
     return (
-        <div style={{ fontSize: 12, color: 'red' }}>{props}</div>
+      <div style={{     
+        position:"absolute",
+        fontSize:"12px",
+        fontFamily: "inherit",
+        fontStyle: "oblique",
+        marginTop:"-30px",
+        marginBottom:"0px",
+        color:"#e74c3c", }}>{props}</div>
+
     )
 }
