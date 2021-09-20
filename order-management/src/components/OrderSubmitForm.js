@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TextClass from "./TextClass";
 import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
+import Swal from 'sweetalert2'
 import Typography from "@material-ui/core/Typography";
 import { MainContainer } from "./MainContainer";
 import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
 import Table from "./Table";
-// import CheckBox from "./CheckBox";
+
 
 
 class OrderSubmitForm extends React.Component {
@@ -45,14 +46,14 @@ class OrderSubmitForm extends React.Component {
             disabled: true,
             tags: [
                 {
-                    name: 'Fragile'
+                    name: 'FRAGILE'
                 },
                 {
-                    name: 'Dangerous'
+                    name: 'DANGEROUS'
                 }
             ],
             selected: [],
-            radio: "standard"
+            radio: "standard",
         }
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
@@ -145,7 +146,6 @@ class OrderSubmitForm extends React.Component {
             weightError = "*Invalid weight";
         }
 
-
         this.setState({ nameError: nameError });
         this.setState({ emailError: emailError });
         this.setState({ phoneError: phoneError });
@@ -160,11 +160,8 @@ class OrderSubmitForm extends React.Component {
         this.setState({ widthError: widthError });
         this.setState({ weightError: weightError });
 
-
-
         this.setState({ isValid: !(nameError || fromLatitudeError || fromLongitudeError || fromAddressNameError || toLatitudeError || toLongitudeError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
         this.setState({ disabled: !this.state.isValid });
-
     }
 
     nameHandler = arg => {
@@ -187,7 +184,6 @@ class OrderSubmitForm extends React.Component {
         })
         this.validate();
     }
-
 
     fromLatitudeHandler = arg => {
         this.setState({
@@ -231,8 +227,6 @@ class OrderSubmitForm extends React.Component {
         this.validate();
     }
 
-
-
     lengthHandler = arg => {
         this.setState({
             length: arg
@@ -267,11 +261,78 @@ class OrderSubmitForm extends React.Component {
         })
     }
 
-
     handleSubmit = event => {
         event.preventDefault();
-        // alert(this.state);
-        console.log(this.state);
+
+        let orderInfo = {
+            clientName: this.state.name,
+            from: {
+                latitude: this.state.fromLatitude,
+                longitude: this.state.fromLongitude,
+                addressName: this.state.fromAddressName
+            },
+            to: {
+                latitude: this.state.toLatitude,
+                longitude: this.state.toLongitude,
+                addressName: this.state.toAddressName
+            },
+            clientEmail: this.state.email,
+            phoneNumber: this.state.phone,
+            length: this.state.length,
+            width: this.state.width,
+            height: this.state.height,
+            weight: this.state.weight,
+            tags: this.state.selected,
+            deliveryType: this.state.radio.toUpperCase()
+        }
+
+
+        let result = {
+            "Client name": this.state.name,
+            "Client email": this.state.email,
+            "Phone number": this.state.phone,
+            "From": this.state.fromAddressName,
+            "To": this.state.toAddressName,
+            "Length": this.state.length,
+            "Width": this.state.width,
+            "Height": this.state.height,
+            "Weight": this.state.weight,
+            "Tags": this.state.selected,
+            "Delivery type": this.state.radio.toUpperCase()
+        }
+
+
+        fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderInfo),
+        }).then(r => {
+            Swal.fire( {
+            title: 'Your order was created!',
+            text: 'Thank you for choosing Uber!',
+            icon: 'success',
+            showCancelButton: true,
+            cancelButtonText: 'See order info',
+            confirmButtonColor: '#000000',
+            reverseButtons: true,
+            }).then(value => {
+                if(value.isDismissed) {
+                    Swal.fire({
+                        title: displayOrderInfo(result),
+                        icon: 'info',
+                        iconColor: '#000000',
+                        confirmButtonColor: '#000000',
+                        width: '800px',
+                    })
+                }
+        })}).catch(error => Swal.fire( {
+            title: 'We\'re sorry!',
+            text: 'There\'s a problem with your order!',
+            icon: 'error',
+            confirmButtonColor: '#000000',
+        }));
         return true;
     };
 
@@ -398,57 +459,8 @@ class OrderSubmitForm extends React.Component {
     }
 }
 
-const Fetch = () => {
-    useEffect(() => {
-        /* const url = "https://api.adviceslip.com/advice"
- 
-         const fetchData = async () => {
-             try {
-               const response = await fetch(url);
-               const json = await response.json();
-               console.log(json);
-             } catch (error) {
-               console.log("error", error);
-             }
-           };
-       
-           fetchData();
- */
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: {
-                "clientName": "John Smith",
-                "from": {
-                    "latitude": 1,
-                    "longitude": 2,
-                    "addressName": "Mladost 5, Sofia"
-                },
-                "to": {
-                    "latitude": 4,
-                    "longitude": 5,
-                    "addressName": "Mladost 1, Sofia"
-                },
-                "clientEmail": "jsmith@mail.bg",
-                "phoneNumber": "0894546512",
-                "length": 5,
-                "depth": 2,
-                "height": 3,
-                "weight": 9,
-                "tags": [
-                    "DANGEROUS",
-                    "FRAGILE"
-                ],
-                "deliveryType": "STANDARD"
-            }
-
-        };
-        fetch('https://localhost:8080/orders', requestOptions)
-            .then(response => response.json());
-        //.then(data => setPostId(data.id));
-    }, []);
-
-    return <div></div>;
-};
+function displayOrderInfo(info) {
+    return JSON.stringify(info).replaceAll("\"", "").replaceAll("}", "").replaceAll("{", "").replaceAll(",", "\n");
+}
 
 export default OrderSubmitForm
