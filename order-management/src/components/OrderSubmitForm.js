@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import TextClass from "./TextClass";
 import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
+// import swal from 'sweetalert';
 // import CheckBox from "./CheckBox";
 
 class OrderSubmitForm extends React.Component {
@@ -47,7 +48,7 @@ class OrderSubmitForm extends React.Component {
                 }
             ],
             selected: [],
-            radio: "standard"
+            radio: "standard",
         }
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
@@ -280,27 +281,53 @@ class OrderSubmitForm extends React.Component {
             deliveryType: this.state.radio.toUpperCase()
         }
 
-        let result = false;
-        const response = fetch('http://localhost:8080/orders', {
+
+        let result = {
+            "Client name": this.state.name,
+            "Client email": this.state.email,
+            "Phone number": this.state.phone,
+            "From": this.state.fromAddressName,
+            "To": this.state.toAddressName,
+            "Length": this.state.length,
+            "Width": this.state.width,
+            "Height": this.state.height,
+            "Weight": this.state.weight,
+            "Tags": this.state.selected,
+            "Delivery type": this.state.radio.toUpperCase()
+        }
+
+
+        fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(orderInfo),
-        }).then(r => r.ok == true ? swal({
-            title: "Your order was created!",
-            text: "Thank you for choosing Uber!",
-            icon: "success",
-            buttons: {
-                cancel: "See order info",
-                ok: true,
-            },
-        }).then((value) => {
-            if(value == null) {
-                swal("Order info here");
-            }
-        }) : swal("Oh no!", "There is a problem with your order", "error") );
-
+        }).then(r => {
+            Swal.fire( {
+            title: 'Your order was created!',
+            text: 'Thank you for choosing Uber!',
+            icon: 'success',
+            showCancelButton: true,
+            cancelButtonText: 'See order info',
+            confirmButtonColor: '#000000',
+            reverseButtons: true,
+            }).then(value => {
+                if(value.isDismissed) {
+                    Swal.fire({
+                        title: displayOrderInfo(result),
+                        icon: 'info',
+                        iconColor: '#000000',
+                        confirmButtonColor: '#000000',
+                        width: '800px',
+                    })
+                }
+        })}).catch(error => Swal.fire( {
+            title: 'We\'re sorry!',
+            text: 'There\'s a problem with your order!',
+            icon: 'error',
+            confirmButtonColor: '#000000',
+        }));
         return true;
     };
 
@@ -407,6 +434,10 @@ class OrderSubmitForm extends React.Component {
             </form >
         )
     }
+}
+
+function displayOrderInfo(info) {
+    return JSON.stringify(info).replaceAll("\"", "").replaceAll("}", "").replaceAll("{", "").replaceAll(",", "\n");
 }
 
 export default OrderSubmitForm
