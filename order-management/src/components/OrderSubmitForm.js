@@ -4,8 +4,13 @@ import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
 import Swal from 'sweetalert2'
-// import swal from 'sweetalert';
-// import CheckBox from "./CheckBox";
+import Typography from "@material-ui/core/Typography";
+import { MainContainer } from "./MainContainer";
+import { Form } from "./Form";
+import Button from "@material-ui/core/Button";
+import Table from "./Table";
+
+
 
 class OrderSubmitForm extends React.Component {
     constructor(props) {
@@ -14,16 +19,16 @@ class OrderSubmitForm extends React.Component {
             name: "",
             email: "",
             phone: "",
-            fromLatitude: "0.0",
-            fromLongitude: "0.0",
+            fromLatitude: "",
+            fromLongitude: "",
             fromAddressName: "",
-            toLatitude: "0.0",
-            toLongitude: "0.0",
+            toLatitude: "",
+            toLongitude: "",
             toAddressName: "",
-            length: "0",
-            height: "0",
-            width: "0",
-            weight: "0",
+            length: "",
+            height: "",
+            width: "",
+            weight: "",
             nameError: "",
             emailError: "",
             phoneError: "",
@@ -90,55 +95,55 @@ class OrderSubmitForm extends React.Component {
         let weightError = "";
 
         if (!/^[A-Za-z ]+$/.test(this.state.name)) {
-            nameError = "invalid name";
+            nameError = "*Invalid name";
         }
 
         if (!validator.isEmail(this.state.email)) {
-            emailError = "invalid email";
+            emailError = "*Invalid email";
         }
 
         if (!validator.isMobilePhone(this.state.phone)) {
-            phoneError = "invalid phone number";
+            phoneError = "*Invalid phone number";
         }
 
         if (!validator.isNumeric(this.state.fromLatitude)) {
-            fromLatitudeError = "invalid latitude";
+            fromLatitudeError = "*Invalid latitude";
         }
 
         if (!validator.isNumeric(this.state.fromLongitude)) {
-            fromLongitudeError = "invalid longitude";
+            fromLongitudeError = "*Invalid longitude";
         }
 
         if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
-            fromAddressNameError = "invalid address name";
+            fromAddressNameError = "*Invalid address name";
         }
 
         if (!validator.isNumeric(this.state.toLatitude)) {
-            toLatitudeError = "invalid latitude";
+            toLatitudeError = "*Invalid latitude";
         }
 
         if (!validator.isNumeric(this.state.toLongitude)) {
-            toLongitudeError = "invalid longitude";
+            toLongitudeError = "*Invalid longitude";
         }
 
         if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
-            toAddressNameError = "invalid address name";
+            toAddressNameError = "*Invalid address name";
         }
 
         if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
-            lengthError = "invalid length";
+            lengthError = "*Invalid length";
         }
 
         if (!validator.isNumeric(this.state.height) || this.state.height <= 0) {
-            heightError = "invalid height";
+            heightError = "*Invalid height";
         }
 
         if (!validator.isNumeric(this.state.width) || this.state.width <= 0) {
-            widthError = "invalid width";
+            widthError = "*Invalid width";
         }
 
         if (!validator.isNumeric(this.state.weight) || this.state.weight <= 0) {
-            weightError = "invalid weight";
+            weightError = "*Invalid weight";
         }
 
         this.setState({ nameError: nameError });
@@ -335,7 +340,7 @@ class OrderSubmitForm extends React.Component {
         let selected = this.state.selected
         let find = selected.indexOf(name)
 
-        if(find > -1) {
+        if (find > -1) {
             selected.splice(find, 1)
         } else {
             selected.push(name)
@@ -346,92 +351,110 @@ class OrderSubmitForm extends React.Component {
 
     render() {
         return (
-            <form onSubmit={(e) => { this.handleSubmit(e) }}>
+            <MainContainer>
+                <Typography component="h2" variant="h5">
+                </Typography>
+                <Form onSubmit={(e) => { this.handleSubmit(e) }}>
+                    <h1>ORDER</h1>
+                    <TextClass value={this.state.name} fieldName={"Name"} handler={this.nameHandler.bind(this)}
+                        id="clientName"
+                        type="text"
+                    />
+                    <Error props={this.state.nameError} />
+                    <TextClass value={this.state.email} fieldName={"Email"} handler={this.emailHandler.bind(this)}
+                        id="email"
+                        type="text"
+                    />
+                    <Error props={this.state.emailError} />
+                    <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)}
+                        id="phoneNumber"
+                        type="tel"
+                    />
+                    <Error props={this.state.phoneError} />
+                    <hr></hr>
+                    <br />
+                    <Table fromLantitude={this.state.fromLatitude} fieldFromLantitude={"Latitude"} handlerFromLantitude={this.fromLatitudeHandler.bind(this)} fromLantitudeError={this.state.fromLatitudeError} fromLongitude={this.state.fromLongitude} fieldFromLongitude={"Longitude"} handlerFromLongitude={this.fromLongitudeHandler.bind(this)} fromLongitudeError={this.state.fromLongitudeError} fromAddress={this.state.fromAddressName} fieldFromAddress={"From"} handlerFromAddress={this.fromAddressNameHandler.bind(this)} fromAddressError={this.state.fromAddressNameError} toLantitude={this.state.toLatitude} fieldToLantitude={"Latitude"} handlerToLantitude={this.toLatitudeHandler.bind(this)} toLantitudeError={this.state.toLatitudeError} toLongitude={this.state.toLongitude} fieldToLongitude={"Longitude"} handlerToLongitude={this.toLongitudeHandler.bind(this)} toLongitudeError={this.state.toLongitudeError} toAddress={this.state.toAddressName} fieldToAddress={"To"} handlerToAddress={this.toAddressNameHandler.bind(this)} toAddressError={this.state.toAddressNameError}
+                    />
+                    <hr></hr>
+                    <br />
+                    <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)}
+                        label="length"
+                        type="text" />
+                    <Error props={this.state.lengthError} />
 
-                <TextClass value={this.state.name} fieldName={"Name"} handler={this.nameHandler.bind(this)} />
-                <Error props={this.state.nameError} />
+                    <TextClass value={this.state.height} fieldName={"Height"} handler={this.heightHandler.bind(this)}
+                        label="height"
+                        type="text" />
+                    <Error props={this.state.heightError} />
 
-                <TextClass value={this.state.email} fieldName={"Email"} handler={this.emailHandler.bind(this)} />
-                <Error props={this.state.emailError} />
+                    <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)} />
+                    <Error props={this.state.widthError}
+                        label="width"
+                        type="text" />
 
-                <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)} />
-                <Error props={this.state.phoneError} />
+                    <TextClass value={this.state.weight} fieldName={"Weight"} handler={this.weightHandler.bind(this)}
+                        label="weigth"
+                        type="text" />
+                    <Error props={this.state.weightError} />
+                    <hr></hr>
+                    <br />
+                    <section>
+                        <label style={{
+                            fontSize: "18px"
+                        }}>Tags</label>
+                        <table style={{
+                            margin: "10px 30px 30px 0",
+                            background: "#f4f4f4",
+                            borderRadius: 5,
+                            boxShadow: '0 0px 3px rgba(0,0,0,0.3)',
+                            color: '#777',
+                            height: "100%",
+                            padding: '15px',
+                            width: "100%"
+                        }}>
+                            <tr>
+                                <td>
+                                    {
+                                        this.state.tags.map(item => {
+                                            return (
+                                                <label>
+                                                    <input style={{
+                                                        marginLeft: "10%"
+                                                    }}
+                                                        type="checkbox"
+                                                        onChange={() => this.tagsHandler(item.name)}
+                                                        selected={this.state.selected.includes(item.name)} />
+                                                    <span>{item.name}</span>
+                                                </label>
+                                            )
+                                        })
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </section>
 
-
-                <table align="center" border="1">
-                    <tr>
-                        <td><label type="text">From Address</label></td>
-                        <td><label type="text">To Address</label></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromLatitude} fieldName={"latitude"} handler={this.fromLatitudeHandler.bind(this)} />
-                            <Error props={this.state.fromLatitudeError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toLatitude} fieldName={"latitude"} handler={this.toLatitudeHandler.bind(this)} />
-                            <Error props={this.state.toLatitudeError} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromLongitude} fieldName={"longitude"} handler={this.fromLongitudeHandler.bind(this)} />
-                            <Error props={this.state.fromLongitudeError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toLongitude} fieldName={"longitude"} handler={this.toLongitudeHandler.bind(this)} />
-                            <Error props={this.state.toLongitudeError} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromAddressName} fieldName={"address"} handler={this.fromAddressNameHandler.bind(this)} />
-                            <Error props={this.state.fromAddressNameError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toAddressName} fieldName={"address"} handler={this.toAddressNameHandler.bind(this)} />
-                            <Error props={this.state.toAddressNameError} />
-                        </td>
-                    </tr>
-                </table>
-
-
-                <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)} />
-                <Error props={this.state.lengthError} />
-
-                <TextClass value={this.state.height} fieldName={"Height"} handler={this.heightHandler.bind(this)} />
-                <Error props={this.state.heightError} />
-
-                <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)} />
-                <Error props={this.state.widthError} />
-
-                <TextClass value={this.state.weight} fieldName={"Weight"} handler={this.weightHandler.bind(this)} />
-                <Error props={this.state.weightError} />
-
-                {/*<CheckBox checkbox={this.state.isFragile} fieldName={"Fragile"} handler={this.isFragileHandler.bind(this)} />*/}
-                {/*<CheckBox checkbox={this.state.isDangerous} fieldName={"Dangerous"} handler={this.isDangerousHandler.bind(this)} />*/}
-                {/*<br/>*/}
-                {/*{*/}
-
-                {
-                    this.state.tags.map(item => {
-                        return (
-                            <label key={ item.name }>
-                                <input
-                                    type="checkbox"
-                                    onChange={() => this.tagsHandler(item.name)}
-                                    selected={this.state.selected.includes(item.name)}/>
-                                <span>{ item.name }</span>
-                            </label>
-                        )
-                    })
-                }
-                <br/>
-
-                <RadioButton radio={this.state.radio} fieldName={"Delivery Type"} handler={this.deliveryTypeHandler.bind(this)} />
-
-                <button type="submit" disabled={this.state.disabled} >Submit </button>
-            </form >
+                    <RadioButton radio={this.state.radio} fieldName={"Delivery Type"} handler={this.deliveryTypeHandler.bind(this)} />
+                    <Button type="submit"
+                        fullWidth
+                        variant="contained"
+                        disabled={this.state.disabled}
+                        style={{
+                            background:"#0e0e0e",
+                            borderRadius: 5,
+                            boxShadow: '0 0px 5px rgba(0,0,0,0.3)',
+                            height: "100%",
+                            marginTop: '20px',
+                            padding: "10px",
+                            fontSize: "18px",
+                            width: "100%",
+                            color:"#f5f5f5"
+                        }}>
+                        Complete
+                    </Button>
+                </Form>
+                <script src="success.js"></script>
+            </MainContainer>
         )
     }
 }
