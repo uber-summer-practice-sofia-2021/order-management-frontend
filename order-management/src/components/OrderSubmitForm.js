@@ -3,8 +3,10 @@ import TextClass from "./TextClass";
 import Error from "./Error"
 import RadioButton from "./RadioButton"
 import validator from 'validator';
-// import CheckBox from "./CheckBox";
+import Geocoder from 'react-native-geocoding';
 
+
+Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
 class OrderSubmitForm extends React.Component {
     constructor(props) {
         super(props);
@@ -68,6 +70,9 @@ class OrderSubmitForm extends React.Component {
         this.deliveryTypeHandler = this.deliveryTypeHandler.bind(this)
 
         this.tagsHandler = this.tagsHandler.bind(this);
+
+        this.toHandler = this.toHandler.bind(this);
+        this.fromHandler = this.fromHandler.bind(this);
     }
 
     validate = () => {
@@ -225,7 +230,12 @@ class OrderSubmitForm extends React.Component {
         })
         this.validate();
     }
-
+    toHandler(address, lat, lng) {
+        this.toAddressNameHandler(address);
+        this.toLatitudeHandler(lat);
+        this.toLongitudeHandler(lng);
+    }
+    fromHandler(address, lat, lng) { }
 
 
     lengthHandler = arg => {
@@ -274,7 +284,7 @@ class OrderSubmitForm extends React.Component {
         let selected = this.state.selected
         let find = selected.indexOf(name)
 
-        if(find > -1) {
+        if (find > -1) {
             selected.splice(find, 1)
         } else {
             selected.push(name)
@@ -296,43 +306,35 @@ class OrderSubmitForm extends React.Component {
                 <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)} />
                 <Error props={this.state.phoneError} />
 
+                <TextClass value={this.state.fromAddressName} fieldName={"from address"} handler={(event) => {
 
-                <table align="center" border="1">
-                    <tr>
-                        <td><label type="text">From Address</label></td>
-                        <td><label type="text">To Address</label></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromLatitude} fieldName={"latitude"} handler={this.fromLatitudeHandler.bind(this)} />
-                            <Error props={this.state.fromLatitudeError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toLatitude} fieldName={"latitude"} handler={this.toLatitudeHandler.bind(this)} />
-                            <Error props={this.state.toLatitudeError} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromLongitude} fieldName={"longitude"} handler={this.fromLongitudeHandler.bind(this)} />
-                            <Error props={this.state.fromLongitudeError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toLongitude} fieldName={"longitude"} handler={this.toLongitudeHandler.bind(this)} />
-                            <Error props={this.state.toLongitudeError} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <TextClass value={this.state.fromAddressName} fieldName={"address"} handler={this.fromAddressNameHandler.bind(this)} />
-                            <Error props={this.state.fromAddressNameError} />
-                        </td>
-                        <td>
-                            <TextClass value={this.state.toAddressName} fieldName={"address"} handler={this.toAddressNameHandler.bind(this)} />
-                            <Error props={this.state.toAddressNameError} />
-                        </td>
-                    </tr>
-                </table>
+                    Geocoder.from(event)
+                        .then(json => {
+                            var location = json.results[0].geometry.location;
+
+                            this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
+
+
+                            this.fromAddressNameHandler(location.address);
+                        })
+                        .catch(error => console.warn(error));
+
+                }} />
+
+                <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+
+                    Geocoder.from(event)
+                        .then(json => {
+                            var location = json.results[0].geometry.location;
+
+                            this.setState({ toLatitude: location.lat, toLongitude: location.lng });
+
+
+                            this.toAddressNameHandler(location.address);
+                        })
+                        .catch(error => console.warn(error));
+
+                }} />
 
 
                 <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)} />
@@ -355,17 +357,17 @@ class OrderSubmitForm extends React.Component {
                 {
                     this.state.tags.map(item => {
                         return (
-                            <label key={ item.name }>
+                            <label key={item.name}>
                                 <input
                                     type="checkbox"
                                     onChange={() => this.tagsHandler(item.name)}
-                                    selected={this.state.selected.includes(item.name)}/>
-                                <span>{ item.name }</span>
+                                    selected={this.state.selected.includes(item.name)} />
+                                <span>{item.name}</span>
                             </label>
                         )
                     })
                 }
-                <br/>
+                <br />
 
                 <RadioButton radio={this.state.radio} fieldName={"Delivery Type"} handler={this.deliveryTypeHandler.bind(this)} />
 
