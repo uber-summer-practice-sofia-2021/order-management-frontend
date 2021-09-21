@@ -9,6 +9,7 @@ import { MainContainer } from "./MainContainer";
 import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
 import Geocoder from 'react-native-geocoding';
+import GoogleMaps from "./Map"
 
 
 Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
@@ -42,6 +43,8 @@ class OrderSubmitForm extends React.Component {
             heightError: "",
             widthError: "",
             weightError: "",
+            fromMarkerShown: false,
+            toMarkerShown: false,
             isValid: false,
             disabled: true,
             tags: [
@@ -380,7 +383,7 @@ class OrderSubmitForm extends React.Component {
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
+                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
 
                             })
                             .catch(error => { console.log(2222); console.warn(error) });
@@ -393,12 +396,15 @@ class OrderSubmitForm extends React.Component {
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({ toLatitude: location.lat, toLongitude: location.lng });
+                                this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
                             })
                             .catch(error => console.warn(error));
 
                     }} />
+                    <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
                     <hr></hr>
+
+
                     <br />
                     <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)}
                         label="length"
