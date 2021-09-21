@@ -1,6 +1,6 @@
 import React from "react";
 import GoogleMapReact from 'google-map-react';
-import {Marker} from 'react-google-maps';
+import { Marker } from 'react-google-maps';
 /*
 function Map() {
     return <GoogleMap defaultZoom={12.2} defaultCenter={{ lat: 42.698334, lng: 23.319941 }} onClick={(e) => handleClick(e)} />
@@ -24,10 +24,10 @@ export default function App1() {
         />
     </div>
 }*/
-const GoogleMaps = ({ fromIsMarkerShown, toIsMarkerShown, fromLatitude, fromLongitude, toLatitude, toLongitude }) => {
+var GoogleMaps = ({ showMap, fromLatitude, fromLongitude, toLatitude, toLongitude }) => {
     const fromRenderMarkers = (map, maps) => {
         let marker = new maps.Marker({
-            position: { lat: fromLatitude, lng: fromLongitude },
+            position: { lat: /*fromLatitude*/42.698334, lng: /*fromLongitude*/23.319941 },
             map,
             title: 'From'
         });
@@ -43,23 +43,35 @@ const GoogleMaps = ({ fromIsMarkerShown, toIsMarkerShown, fromLatitude, fromLong
         return marker;
     };
 
-    return (
-        <div style={{ height: '50vh', width: '100%' }}>
+    if (showMap) {
+        return (
+            <div style={{ height: '50vh', width: '100%' }}>
+                <GoogleMapReact
+                    bootstrapURLKeys={{ key: "AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM" }}
+                    defaultCenter={{ lat: 42.698334, lng: 23.319941 }}
+                    defaultZoom={12}
+                    yesIWantToUseGoogleMapApiInternals
+                    onGoogleApiLoaded={({ map, maps }) => {
+                        fromRenderMarkers(map, maps);
+                        toRenderMarkers(map, maps)
+                    }}
+                >
+                </GoogleMapReact>
+            </div>
+        );
+    }
+    else {
+        return(<div style={{ height: '50vh', width: '100%' }}>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: "AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM" }}
                 defaultCenter={{ lat: 42.698334, lng: 23.319941 }}
                 defaultZoom={12}
                 yesIWantToUseGoogleMapApiInternals
-            // onDrag={({ map, maps }) => {
-            //     fromRenderMarkers(map, maps);
-            //     toRenderMarkers(map, maps)
-            // }}
             >
-                {toIsMarkerShown && <Marker position={{ lat: fromLatitude, lng: fromLongitude }} />}
-                {fromIsMarkerShown && <Marker position={{ lat: toLatitude, lng: toLongitude }} />}
             </GoogleMapReact>
-        </div>
-    );
+        </div>)
+            ;
+    }
 };
 
 export default GoogleMaps;

@@ -44,8 +44,7 @@ class OrderSubmitForm extends React.Component {
             heightError: "",
             widthError: "",
             weightError: "",
-            fromMarkerShown: false,
-            toMarkerShown: false,
+            showMap: false,
             isValid: false,
             disabled: true,
             tags: [
@@ -384,7 +383,7 @@ class OrderSubmitForm extends React.Component {
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
+                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
 
                             })
                             .catch(error => { console.log(2222); console.warn(error) });
@@ -397,13 +396,17 @@ class OrderSubmitForm extends React.Component {
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
-                            })
-                            .catch(error => console.warn(error));
+                                this.setState({ toLatitude: location.lat, toLongitude: location.lng });
+
+                            }).catch(error => console.warn(error));
 
                     }} />
-                    <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
+
+
+                    <GoogleMaps value={this.state.showMap, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
+                    <input type="button" value="Maps" onClick={() => { console.log(this.state.fromLatitude);this.setState({ showMap: true }); }}/>
                     <hr></hr>
+
 
 
                     <br />
