@@ -378,7 +378,7 @@ class OrderSubmitForm extends React.Component {
                     <Error props={this.state.phoneError} />
                     <hr></hr>
                     <br />
-                    <table style={{ width: "100%" }}>
+                    <table style={{width: "100%"}}>
                         <tr>
                             <td>
                                 <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
@@ -393,6 +393,7 @@ class OrderSubmitForm extends React.Component {
                                         .catch(error => { console.log(2222); console.warn(error) });
 
                                 }} />
+                                 <Error props={this.state.fromAddressNameError} />
                             </td>
                             <td>
                                 <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
@@ -406,11 +407,12 @@ class OrderSubmitForm extends React.Component {
                                         .catch(error => console.warn(error));
 
                                 }} />
+                                <Error props={this.state.toAddressNameError} />
                             </td>
                         </tr>
                     </table>
                     <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
-                    <br />
+                    <br/>
                     <hr></hr>
 
 
