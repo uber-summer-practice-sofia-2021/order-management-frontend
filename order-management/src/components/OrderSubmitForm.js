@@ -18,6 +18,7 @@ class OrderSubmitForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            orderId: "",
             name: "",
             email: "",
             phone: "",
@@ -59,6 +60,7 @@ class OrderSubmitForm extends React.Component {
             selected: [],
             radio: "standard",
         }
+        this.orderIdHandler = this.orderIdHandler.bind(this);
         this.nameHandler = this.nameHandler.bind(this);
         this.emailHandler = this.emailHandler.bind(this);
         this.phoneHandler = this.phoneHandler.bind(this);
@@ -155,6 +157,12 @@ class OrderSubmitForm extends React.Component {
         this.setState({ isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
         this.setState({ disabled: !this.state.isValid });
         console.log(this.state.disabled);
+    }
+
+    orderIdHandler = arg => {
+        this.setState({
+            orderId: arg
+        })
     }
 
     nameHandler = arg => {
@@ -313,6 +321,9 @@ class OrderSubmitForm extends React.Component {
             },
             body: JSON.stringify(orderInfo),
         }).then(r => {
+            r.text().then(t => {
+                this.setState({orderId: t.substr(38,36)});
+            });
             Swal.fire({
                 title: 'Your order was created!',
                 text: 'Thank you for choosing Uber!',
@@ -324,11 +335,11 @@ class OrderSubmitForm extends React.Component {
             }).then(value => {
                 if (value.isDismissed) {
                     Swal.fire({
-                        title: displayOrderInfo(result),
+                        title: "Order ID: " + this.state.orderId + "\n" + displayOrderInfo(result),
                         icon: 'info',
                         iconColor: '#000000',
                         confirmButtonColor: '#000000',
-                        width: '800px',
+                        width: '900px',
                     })
                 }
             })
