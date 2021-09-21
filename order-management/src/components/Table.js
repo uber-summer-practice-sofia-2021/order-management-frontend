@@ -5,7 +5,7 @@ import Error from "./Error"
 function Table({ fromLantitude, fieldFromLantitude, handlerFromLantitude, fromLantitudeError, fromLongitude, fieldFromLongitude, handlerFromLongitude, fromLongitudeError, fromAddress, fieldFromAddress, handlerFromAddress, fromAddressError, toLantitude, fieldToLantitude, handlerToLantitude, toLantitudeError, toLongitude, fieldToLongitude, handlerToLongitude, toLongitudeError, toAddress, fieldToAddress, handlerToAddress, toAddressError }) {
 
     return (
-        <table>
+        <table style={{width: "100%"}}>
             <tr>
                 <td style={{
                     padding: "10px"

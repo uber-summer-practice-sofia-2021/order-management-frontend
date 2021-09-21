@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    width: "140%",
     marginTop: theme.spacing(1),
     background: "#fafafa",
     borderRadius: 5,
@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#777',
     height: "100%",
     padding: '20px 40px 40px 40px',
-    margin:'50px'
+    margin:'50px',
+    marginTop:'50px'
   }
 }));
 

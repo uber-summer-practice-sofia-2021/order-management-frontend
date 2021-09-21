@@ -10,8 +10,6 @@ import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
 import Table from "./Table";
 
-
-
 class OrderSubmitForm extends React.Component {
     constructor(props) {
         super(props);
@@ -453,7 +451,6 @@ class OrderSubmitForm extends React.Component {
                         Complete
                     </Button>
                 </Form>
-                <script src="success.js"></script>
             </MainContainer>
         )
     }
