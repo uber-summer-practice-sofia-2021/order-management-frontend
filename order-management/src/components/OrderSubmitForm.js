@@ -378,31 +378,39 @@ class OrderSubmitForm extends React.Component {
                     <Error props={this.state.phoneError} />
                     <hr></hr>
                     <br />
-                    <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
-                        this.fromAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
+                    <table style={{ width: "100%" }}>
+                        <tr>
+                            <td>
+                                <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
+                                    this.fromAddressNameHandler(event);
+                                    Geocoder.from(event)
+                                        .then(json => {
+                                            var location = json.results[0].geometry.location;
 
-                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
+                                            this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
 
-                            })
-                            .catch(error => { console.log(2222); console.warn(error) });
+                                        })
+                                        .catch(error => { console.log(2222); console.warn(error) });
 
-                    }} />
+                                }} />
+                            </td>
+                            <td>
+                                <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+                                    this.toAddressNameHandler(event);
+                                    Geocoder.from(event)
+                                        .then(json => {
+                                            var location = json.results[0].geometry.location;
 
-                    <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
-                        this.toAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
+                                            this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
+                                        })
+                                        .catch(error => console.warn(error));
 
-                                this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
-                            })
-                            .catch(error => console.warn(error));
-
-                    }} />
+                                }} />
+                            </td>
+                        </tr>
+                    </table>
                     <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
+                    <br />
                     <hr></hr>
 
 

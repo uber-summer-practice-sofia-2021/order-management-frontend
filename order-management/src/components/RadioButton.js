@@ -31,7 +31,7 @@ function RadioButton({ radio, fieldName, handler }) {
                         />
                         <label>Standard</label>
                         <input style={{
-                            marginLeft: "5%"
+                            marginLeft: "9%"
                         }}
                             type="radio"
                             checked={radio === "express"}
