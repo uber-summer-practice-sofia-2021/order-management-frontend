@@ -8,10 +8,11 @@ import Typography from "@material-ui/core/Typography";
 import { MainContainer } from "./MainContainer";
 import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
+import Table from "./Table";
 import Geocoder from 'react-native-geocoding';
 
-
 Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
+
 class OrderSubmitForm extends React.Component {
     constructor(props) {
         super(props);
@@ -476,7 +477,6 @@ class OrderSubmitForm extends React.Component {
                         Complete
                     </Button>
                 </Form>
-                <script src="success.js"></script>
             </MainContainer>
         )
     }
