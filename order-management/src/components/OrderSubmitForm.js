@@ -8,10 +8,10 @@ import Typography from "@material-ui/core/Typography";
 import { MainContainer } from "./MainContainer";
 import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
-import Table from "./Table";
+import Geocoder from 'react-native-geocoding';
 
 
-
+Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
 class OrderSubmitForm extends React.Component {
     constructor(props) {
         super(props);
@@ -19,11 +19,11 @@ class OrderSubmitForm extends React.Component {
             name: "",
             email: "",
             phone: "",
-            fromLatitude: "",
-            fromLongitude: "",
+            fromLatitude: 0,
+            fromLongitude: 0,
             fromAddressName: "",
-            toLatitude: "",
-            toLongitude: "",
+            toLatitude: 0,
+            toLongitude: 0,
             toAddressName: "",
             length: "",
             height: "",
@@ -75,6 +75,9 @@ class OrderSubmitForm extends React.Component {
         this.deliveryTypeHandler = this.deliveryTypeHandler.bind(this)
 
         this.tagsHandler = this.tagsHandler.bind(this);
+
+        this.toHandler = this.toHandler.bind(this);
+        this.fromHandler = this.fromHandler.bind(this);
     }
 
     validate = () => {
@@ -106,25 +109,10 @@ class OrderSubmitForm extends React.Component {
             phoneError = "*Invalid phone number";
         }
 
-        if (!validator.isNumeric(this.state.fromLatitude)) {
-            fromLatitudeError = "*Invalid latitude";
-        }
-
-        if (!validator.isNumeric(this.state.fromLongitude)) {
-            fromLongitudeError = "*Invalid longitude";
-        }
-
         if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
             fromAddressNameError = "*Invalid address name";
         }
 
-        if (!validator.isNumeric(this.state.toLatitude)) {
-            toLatitudeError = "*Invalid latitude";
-        }
-
-        if (!validator.isNumeric(this.state.toLongitude)) {
-            toLongitudeError = "*Invalid longitude";
-        }
 
         if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
             toAddressNameError = "*Invalid address name";
@@ -160,8 +148,9 @@ class OrderSubmitForm extends React.Component {
         this.setState({ widthError: widthError });
         this.setState({ weightError: weightError });
 
-        this.setState({ isValid: !(nameError || fromLatitudeError || fromLongitudeError || fromAddressNameError || toLatitudeError || toLongitudeError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
+        this.setState({ isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
         this.setState({ disabled: !this.state.isValid });
+        console.log(this.state.disabled);
     }
 
     nameHandler = arg => {
@@ -261,6 +250,17 @@ class OrderSubmitForm extends React.Component {
         })
     }
 
+    toHandler(address, lat, lng) {
+        this.toAddressNameHandler(address);
+        this.toLatitudeHandler(lat);
+        this.toLongitudeHandler(lng);
+    }
+    fromHandler(address, lat, lng) {
+        this.fromAddressNameHandler(address);
+        this.fromLatitudeHandler(lat);
+        this.fromLongitudeHandler(lng);
+    }
+
     handleSubmit = event => {
         event.preventDefault();
 
@@ -309,16 +309,16 @@ class OrderSubmitForm extends React.Component {
             },
             body: JSON.stringify(orderInfo),
         }).then(r => {
-            Swal.fire( {
-            title: 'Your order was created!',
-            text: 'Thank you for choosing Uber!',
-            icon: 'success',
-            showCancelButton: true,
-            cancelButtonText: 'See order info',
-            confirmButtonColor: '#000000',
-            reverseButtons: true,
+            Swal.fire({
+                title: 'Your order was created!',
+                text: 'Thank you for choosing Uber!',
+                icon: 'success',
+                showCancelButton: true,
+                cancelButtonText: 'See order info',
+                confirmButtonColor: '#000000',
+                reverseButtons: true,
             }).then(value => {
-                if(value.isDismissed) {
+                if (value.isDismissed) {
                     Swal.fire({
                         title: displayOrderInfo(result),
                         icon: 'info',
@@ -327,7 +327,8 @@ class OrderSubmitForm extends React.Component {
                         width: '800px',
                     })
                 }
-        })}).catch(error => Swal.fire( {
+            })
+        }).catch(error => Swal.fire({
             title: 'We\'re sorry!',
             text: 'There\'s a problem with your order!',
             icon: 'error',
@@ -373,8 +374,30 @@ class OrderSubmitForm extends React.Component {
                     <Error props={this.state.phoneError} />
                     <hr></hr>
                     <br />
-                    <Table fromLantitude={this.state.fromLatitude} fieldFromLantitude={"Latitude"} handlerFromLantitude={this.fromLatitudeHandler.bind(this)} fromLantitudeError={this.state.fromLatitudeError} fromLongitude={this.state.fromLongitude} fieldFromLongitude={"Longitude"} handlerFromLongitude={this.fromLongitudeHandler.bind(this)} fromLongitudeError={this.state.fromLongitudeError} fromAddress={this.state.fromAddressName} fieldFromAddress={"From"} handlerFromAddress={this.fromAddressNameHandler.bind(this)} fromAddressError={this.state.fromAddressNameError} toLantitude={this.state.toLatitude} fieldToLantitude={"Latitude"} handlerToLantitude={this.toLatitudeHandler.bind(this)} toLantitudeError={this.state.toLatitudeError} toLongitude={this.state.toLongitude} fieldToLongitude={"Longitude"} handlerToLongitude={this.toLongitudeHandler.bind(this)} toLongitudeError={this.state.toLongitudeError} toAddress={this.state.toAddressName} fieldToAddress={"To"} handlerToAddress={this.toAddressNameHandler.bind(this)} toAddressError={this.state.toAddressNameError}
-                    />
+                    <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
+                        this.fromAddressNameHandler(event);
+                        Geocoder.from(event)
+                            .then(json => {
+                                var location = json.results[0].geometry.location;
+
+                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
+
+                            })
+                            .catch(error => { console.log(2222); console.warn(error) });
+
+                    }} />
+
+                    <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+                        this.toAddressNameHandler(event);
+                        Geocoder.from(event)
+                            .then(json => {
+                                var location = json.results[0].geometry.location;
+
+                                this.setState({ toLatitude: location.lat, toLongitude: location.lng });
+                            })
+                            .catch(error => console.warn(error));
+
+                    }} />
                     <hr></hr>
                     <br />
                     <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)}
@@ -440,7 +463,7 @@ class OrderSubmitForm extends React.Component {
                         variant="contained"
                         disabled={this.state.disabled}
                         style={{
-                            background:"#0e0e0e",
+                            background: "#0e0e0e",
                             borderRadius: 5,
                             boxShadow: '0 0px 5px rgba(0,0,0,0.3)',
                             height: "100%",
@@ -448,7 +471,7 @@ class OrderSubmitForm extends React.Component {
                             padding: "10px",
                             fontSize: "18px",
                             width: "100%",
-                            color:"#f5f5f5"
+                            color: "#f5f5f5"
                         }}>
                         Complete
                     </Button>
