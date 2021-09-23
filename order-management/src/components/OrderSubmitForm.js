@@ -35,11 +35,7 @@ class OrderSubmitForm extends React.Component {
             nameError: "",
             emailError: "",
             phoneError: "",
-            fromLatitudeError: "",
-            fromLongitudeError: "",
             fromAddressNameError: "",
-            toLatitudeError: "",
-            toLongitudeError: "",
             toAddressNameError: "",
             lengthError: "",
             heightError: "",
@@ -93,11 +89,7 @@ class OrderSubmitForm extends React.Component {
         let nameError = "";
         let emailError = "";
         let phoneError = "";
-        let fromLatitudeError = "";
-        let fromLongitudeError = "";
         let fromAddressNameError = "";
-        let toLatitudeError = "";
-        let toLongitudeError = "";
         let toAddressNameError = "";
         let lengthError = "";
         let heightError = "";
@@ -116,14 +108,14 @@ class OrderSubmitForm extends React.Component {
             phoneError = "*Invalid phone number";
         }
 
-        if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
-            fromAddressNameError = "*Invalid address name";
-        }
+        // if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
+        //     fromAddressNameError = "*Invalid address name";
+        // }
 
 
-        if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
-            toAddressNameError = "*Invalid address name";
-        }
+        // if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
+        //     toAddressNameError = "*Invalid address name";
+        // }
 
         if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
             lengthError = "*Invalid length";
@@ -144,18 +136,14 @@ class OrderSubmitForm extends React.Component {
         this.setState({nameError: nameError});
         this.setState({emailError: emailError});
         this.setState({phoneError: phoneError});
-        this.setState({fromLatitudeError: fromLatitudeError});
-        this.setState({fromLongitudeError: fromLongitudeError});
         this.setState({fromAddressNameError: fromAddressNameError});
-        this.setState({toLatitudeError: toLatitudeError});
-        this.setState({toLongitudeError: toLongitudeError});
         this.setState({toAddressNameError: toAddressNameError});
         this.setState({lengthError: lengthError});
         this.setState({heightError: heightError});
         this.setState({widthError: widthError});
         this.setState({weightError: weightError});
 
-        this.setState({isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError)});
+        this.setState({isValid: !(nameError || this.state.fromAddressName === this.state.toAddressName || emailError || phoneError || lengthError || heightError || widthError || weightError)});
         this.setState({disabled: !this.state.isValid});
     }
 
