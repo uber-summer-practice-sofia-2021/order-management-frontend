@@ -5,12 +5,12 @@ import RadioButton from "./RadioButton"
 import validator from 'validator';
 import Swal from 'sweetalert2'
 import Typography from "@material-ui/core/Typography";
-import { MainContainer } from "./MainContainer";
-import { Form } from "./Form";
+import {MainContainer} from "./MainContainer";
+import {Form} from "./Form";
 import Button from "@material-ui/core/Button";
 import Table from "./Table";
 import Geocoder from 'react-native-geocoding';
-import GoogleMaps from "./Map"
+import {Map, LoadMap} from "./Map";
 
 Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
 
@@ -45,8 +45,9 @@ class OrderSubmitForm extends React.Component {
             heightError: "",
             widthError: "",
             weightError: "",
-            fromMarkerShown: false,
-            toMarkerShown: false,
+            showMap: false,
+            showToMap: false,
+            showFromMap: false,
             isValid: false,
             disabled: true,
             tags: [
@@ -87,7 +88,7 @@ class OrderSubmitForm extends React.Component {
     }
 
     validate = () => {
-        this.setState({ isValid: true, disabled: false });
+        this.setState({isValid: true, disabled: false});
 
         let nameError = "";
         let emailError = "";
@@ -140,23 +141,22 @@ class OrderSubmitForm extends React.Component {
             weightError = "*Invalid weight";
         }
 
-        this.setState({ nameError: nameError });
-        this.setState({ emailError: emailError });
-        this.setState({ phoneError: phoneError });
-        this.setState({ fromLatitudeError: fromLatitudeError });
-        this.setState({ fromLongitudeError: fromLongitudeError });
-        this.setState({ fromAddressNameError: fromAddressNameError });
-        this.setState({ toLatitudeError: toLatitudeError });
-        this.setState({ toLongitudeError: toLongitudeError });
-        this.setState({ toAddressNameError: toAddressNameError });
-        this.setState({ lengthError: lengthError });
-        this.setState({ heightError: heightError });
-        this.setState({ widthError: widthError });
-        this.setState({ weightError: weightError });
+        this.setState({nameError: nameError});
+        this.setState({emailError: emailError});
+        this.setState({phoneError: phoneError});
+        this.setState({fromLatitudeError: fromLatitudeError});
+        this.setState({fromLongitudeError: fromLongitudeError});
+        this.setState({fromAddressNameError: fromAddressNameError});
+        this.setState({toLatitudeError: toLatitudeError});
+        this.setState({toLongitudeError: toLongitudeError});
+        this.setState({toAddressNameError: toAddressNameError});
+        this.setState({lengthError: lengthError});
+        this.setState({heightError: heightError});
+        this.setState({widthError: widthError});
+        this.setState({weightError: weightError});
 
-        this.setState({ isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
-        this.setState({ disabled: !this.state.isValid });
-        console.log(this.state.disabled);
+        this.setState({isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError)});
+        this.setState({disabled: !this.state.isValid});
     }
 
     orderIdHandler = arg => {
@@ -205,6 +205,7 @@ class OrderSubmitForm extends React.Component {
             fromAddressName: arg
         })
         this.validate();
+        this.setState({showFromMap: true});
     }
 
     toLatitudeHandler = arg => {
@@ -226,6 +227,7 @@ class OrderSubmitForm extends React.Component {
             toAddressName: arg
         })
         this.validate();
+        this.setState({showToMap: true});
     }
 
     lengthHandler = arg => {
@@ -266,11 +268,14 @@ class OrderSubmitForm extends React.Component {
         this.toAddressNameHandler(address);
         this.toLatitudeHandler(lat);
         this.toLongitudeHandler(lng);
+
     }
+
     fromHandler(address, lat, lng) {
         this.fromAddressNameHandler(address);
         this.fromLatitudeHandler(lat);
         this.fromLongitudeHandler(lng);
+
     }
 
     handleSubmit = event => {
@@ -362,7 +367,7 @@ class OrderSubmitForm extends React.Component {
             selected.push(name)
         }
 
-        this.setState({ selected })
+        this.setState({selected})
     }
 
     render() {
@@ -370,85 +375,108 @@ class OrderSubmitForm extends React.Component {
             <MainContainer>
                 <Typography component="h2" variant="h5">
                 </Typography>
-                <Form onSubmit={(e) => { this.handleSubmit(e) }}>
+                <Form onSubmit={(e) => {
+                    this.handleSubmit(e)
+                }}>
                     <h1>ORDER</h1>
                     <TextClass value={this.state.name} fieldName={"Name"} handler={this.nameHandler.bind(this)}
-                        id="clientName"
-                        type="text"
+                               id="clientName"
+                               type="text"
                     />
-                    <Error props={this.state.nameError} />
+                    <Error props={this.state.nameError}/>
                     <TextClass value={this.state.email} fieldName={"Email"} handler={this.emailHandler.bind(this)}
-                        id="email"
-                        type="text"
+                               id="email"
+                               type="text"
                     />
-                    <Error props={this.state.emailError} />
+                    <Error props={this.state.emailError}/>
                     <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)}
-                        id="phoneNumber"
-                        type="tel"
+                               id="phoneNumber"
+                               type="tel"
                     />
-                    <Error props={this.state.phoneError} />
+                    <Error props={this.state.phoneError}/>
                     <hr></hr>
-                    <br />
-                    <table style={{width: "100%"}}>
-                        <tr>
-                            <td>
-                                <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
-                                    this.fromAddressNameHandler(event);
-                                    Geocoder.from(event)
-                                        .then(json => {
-                                            var location = json.results[0].geometry.location;
 
-                                            this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
-
-                                        })
-                                        .catch(error => { console.log(2222); console.warn(error) });
-
-                                }} />
-                                 <Error props={this.state.fromAddressNameError} />
-                            </td>
-                            <td>
-                                <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
-                                    this.toAddressNameHandler(event);
-                                    Geocoder.from(event)
-                                        .then(json => {
-                                            var location = json.results[0].geometry.location;
-
-                                            this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
-                                        })
-                                        .catch(error => console.warn(error));
-
-                                }} />
-                                <Error props={this.state.toAddressNameError} />
-                            </td>
-                        </tr>
-                    </table>
-                    <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
                     <br/>
+                    <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
+                        this.fromAddressNameHandler(event);
+                        Geocoder.from(event)
+                            .then(json => {
+                                var location = json.results[0].geometry.location;
+
+                                this.setState({fromLatitude: location.lat, fromLongitude: location.lng});
+
+                            })
+                            .catch(error => {
+                                console.warn(error)
+                            });
+
+                    }}/>
+
+                    <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+                        this.toAddressNameHandler(event);
+                        Geocoder.from(event)
+                            .then(json => {
+                                var location = json.results[0].geometry.location;
+
+                                this.setState({toLatitude: location.lat, toLongitude: location.lng});
+
+                            }).catch(error => console.warn(error));
+
+                    }}/>
+
+                    <Button type="button"
+                            fullWidth
+                            variant="contained"
+                            disabled={!(this.state.showFromMap && this.state.showToMap)}
+                            onClick={() => this.setState({
+                                showMap: true,
+                                showFromMap: false,
+                                showToMap: false
+                            })}
+                            style={{
+                                background: "#0e0e0e",
+                                borderRadius: 5,
+                                boxShadow: '0 0px 5px rgba(0,0,0,0.3)',
+                                height: "100%",
+                                marginTop: '20px',
+                                marginBottom: '20px',
+                                padding: "10px",
+                                fontSize: "18px",
+                                width: "25%",
+                                color: "#f5f5f5"
+                            }}>
+                        Load map
+                    </Button>
+                    <LoadMap showMap={this.state.showMap} fromAddress={this.state.fromAddressName}
+                             toAddress={this.state.toAddressName} fromLat={this.state.fromLatitude}
+                             fromLng={this.state.fromLongitude} toLat={this.state.toLatitude}
+                             toLng={this.state.toLongitude}/>
+
                     <hr></hr>
 
 
-                    <br />
+                    <br/>
                     <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)}
-                        label="length"
-                        type="text" />
-                    <Error props={this.state.lengthError} />
+                               label="length"
+                               type="text"/>
+                    <Error props={this.state.lengthError}/>
 
                     <TextClass value={this.state.height} fieldName={"Height"} handler={this.heightHandler.bind(this)}
-                        label="height"
-                        type="text" />
-                    <Error props={this.state.heightError} />
+                               label="height"
+                               type="text"/>
+                    <Error props={this.state.heightError}/>
 
-                    <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)} />
+                    <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)}/>
                     <Error props={this.state.widthError}
-                        label="width"
-                        type="text" />
+                           label="width"
+                           type="text"/>
 
                     <TextClass value={this.state.weight} fieldName={"Weight"} handler={this.weightHandler.bind(this)}
-                        label="weigth"
-                        type="text" />
-                    <Error props={this.state.weightError} />
+                               label="weight"
+                               type="text"/>
+                    <Error props={this.state.weightError}/>
                     <hr></hr>
-                    <br />
+                    <br/>
                     <section>
                         <label style={{
                             fontSize: "18px"
@@ -472,9 +500,9 @@ class OrderSubmitForm extends React.Component {
                                                     <input style={{
                                                         marginLeft: "10%"
                                                     }}
-                                                        type="checkbox"
-                                                        onChange={() => this.tagsHandler(item.name)}
-                                                        selected={this.state.selected.includes(item.name)} />
+                                                           type="checkbox"
+                                                           onChange={() => this.tagsHandler(item.name)}
+                                                           selected={this.state.selected.includes(item.name)}/>
                                                     <span>{item.name}</span>
                                                 </label>
                                             )
@@ -485,7 +513,8 @@ class OrderSubmitForm extends React.Component {
                         </table>
                     </section>
 
-                    <RadioButton radio={this.state.radio} fieldName={"Delivery Type"} handler={this.deliveryTypeHandler.bind(this)} />
+                    <RadioButton radio={this.state.radio} fieldName={"Delivery Type"}
+                                 handler={this.deliveryTypeHandler.bind(this)}/>
                     <Button type="submit"
                         fullWidth
                         variant="contained"
@@ -512,5 +541,6 @@ class OrderSubmitForm extends React.Component {
 function displayOrderInfo(info) {
     return JSON.stringify(info).replaceAll("\"", "").replaceAll("}", "").replaceAll("{", "").replaceAll(",", "\n");
 }
+
 
 export default OrderSubmitForm
