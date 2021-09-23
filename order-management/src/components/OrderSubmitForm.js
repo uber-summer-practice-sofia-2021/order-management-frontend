@@ -501,7 +501,7 @@ class OrderSubmitForm extends React.Component {
                             width: "100%",
                             color: "#f5f5f5"
                         }}>
-                        Complete
+                        Submit
                     </Button>
                 </Form>
             </MainContainer>
