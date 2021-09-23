@@ -124,6 +124,11 @@ class OrderSubmitForm extends React.Component {
             toAddressNameError = "*Invalid address name";
         }
 
+        if (this.state.fromAddressName != "" && this.state.toAddressName != "" && this.state.fromAddressName == this.state.toAddressName) {
+            fromAddressNameError = "*Same address name";
+            toAddressNameError = "*Same address name";
+        }
+
         if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
             lengthError = "*Invalid length";
         }
@@ -299,21 +304,6 @@ class OrderSubmitForm extends React.Component {
         }
 
 
-        let result = {
-            "Client name": this.state.name,
-            "Client email": this.state.email,
-            "Phone number": this.state.phone,
-            "From": this.state.fromAddressName,
-            "To": this.state.toAddressName,
-            "Length": this.state.length,
-            "Width": this.state.width,
-            "Height": this.state.height,
-            "Weight": this.state.weight,
-            "Tags": this.state.selected,
-            "Delivery type": this.state.radio.toUpperCase()
-        }
-
-
         fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
@@ -322,7 +312,7 @@ class OrderSubmitForm extends React.Component {
             body: JSON.stringify(orderInfo),
         }).then(r => {
             r.text().then(t => {
-                this.setState({orderId: t.substr(38,36)});
+                this.setState({ orderId: t.substr(38, 36) });
             });
             Swal.fire({
                 title: 'Your order was created!',
@@ -335,11 +325,24 @@ class OrderSubmitForm extends React.Component {
             }).then(value => {
                 if (value.isDismissed) {
                     Swal.fire({
-                        title: "Order ID: " + this.state.orderId + "\n" + displayOrderInfo(result),
+                        html: "<table align='center' height='100%'><tr><td align='left'><hr/>" + "<b>Order ID: </b>" + this.state.orderId
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Client name: </b>" + this.state.name
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Client email: </b>" + this.state.email
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Phone number: </b>" + this.state.phone
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>From address: </b>" + this.state.fromAddressName
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>To address: </b>" + this.state.toAddressName
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Length: </b>" + this.state.length
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Width: </b>" + this.state.width
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Height: </b>" + this.state.height
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Weight: </b>" + this.state.weight
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Tags: </b>" + this.state.selected
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Delivery type: </b>" + this.state.radio.toUpperCase()
+                            + "<hr/></td></tr></table>",
                         icon: 'info',
                         iconColor: '#000000',
                         confirmButtonColor: '#000000',
-                        width: '900px',
+                        width: '500px',
+                        titleAlign: "left"
                     })
                 }
             })
@@ -389,7 +392,7 @@ class OrderSubmitForm extends React.Component {
                     <Error props={this.state.phoneError} />
                     <hr></hr>
                     <br />
-                    <table style={{width: "100%"}}>
+                    <table style={{ width: "100%" }}>
                         <tr>
                             <td>
                                 <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
@@ -404,7 +407,7 @@ class OrderSubmitForm extends React.Component {
                                         .catch(error => { console.log(2222); console.warn(error) });
 
                                 }} />
-                                 <Error props={this.state.fromAddressNameError} />
+                                <Error props={this.state.fromAddressNameError} />
                             </td>
                             <td>
                                 <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
@@ -423,7 +426,7 @@ class OrderSubmitForm extends React.Component {
                         </tr>
                     </table>
                     <GoogleMaps value={this.state.fromMarkerShown, this.state.toMarkerShown, this.state.fromLatitude, this.state.fromLongitude, this.state.toLatitude, this.state.toLongitude} />
-                    <br/>
+                    <br />
                     <hr></hr>
 
 
