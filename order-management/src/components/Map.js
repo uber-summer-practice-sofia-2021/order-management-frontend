@@ -1,77 +1,150 @@
-import React from "react";
-import GoogleMapReact from 'google-map-react';
-import { Marker } from 'react-google-maps';
-/*
-function Map() {
-    return <GoogleMap defaultZoom={12.2} defaultCenter={{ lat: 42.698334, lng: 23.319941 }} onClick={(e) => handleClick(e)} />
-}
-const WrappedMap = withScriptjs(withGoogleMap(Map));
-function handleClick(event) {
-    console.log({ adressssss: 443 });
-    geocodeByAddress('ul. "Hristo Belchev" 16, 1000 Sofia Center, Sofia, Bulgaria')
-        .then(results => { console.log(results); getLatLng(results[0]) })
-        .then(({ lat, lng }) =>
-            console.log('Successfully got latitude and longitude', { lat, lng })
+import React from 'react'
+import {withGoogleMap, GoogleMap, withScriptjs, InfoWindow, Marker} from "react-google-maps";
+import Geocode from "react-geocode";
+
+Geocode.setApiKey("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
+
+class Map extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            toAddress: this.props.toAddressName,
+            fromAddress: this.props.fromAddressName,
+            mapPosition: {
+                lat: this.props.center.lat,
+                lng: this.props.center.lng
+            },
+            markerFromPosition: {
+                lat: this.props.from.lat,
+                lng: this.props.from.lng
+            },
+            markerToPosition: {
+                lat: this.props.to.lat,
+                lng: this.props.to.lng
+            },
+        }
+    }
+
+    componentDidMount() {
+        Geocode.fromLatLng(this.state.markerFromPosition.lat, this.state.markerFromPosition.lng).then(
+            response => {
+                const fromAddress = response.results[0].formatted_address;
+                this.setState({
+                    fromAddress: fromAddress
+                })
+            },
+            error => {
+                console.error(error);
+            }
         );
-}
-export default function App1() {
-    return <div style={{ width: "100v", height: "100vh" }}>
-        <WrappedMap googleMapURL={'https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM'}
-            loadingElement={<div style={{ height: "100%" }} />}
-            containerElement={<div style={{ height: "100%" }} />}
-            mapElement={<div style={{ height: "100%" }}
-            />}
-        />
-    </div>
-}*/
-var GoogleMaps = ({ showMap, fromLatitude, fromLongitude, toLatitude, toLongitude }) => {
-    const fromRenderMarkers = (map, maps) => {
-        let marker = new maps.Marker({
-            position: { lat: /*fromLatitude*/42.698334, lng: /*fromLongitude*/23.319941 },
-            map,
-            title: 'From'
-        });
-        return marker;
+        Geocode.fromLatLng(this.state.markerToPosition.lat, this.state.markerToPosition.lng).then(
+            response => {
+                const toAddress = response.results[0].formatted_address;
+                this.setState({
+                    toAddress: toAddress
+                })
+            },
+            error => {
+                console.error(error);
+            }
+        );
     };
 
-    const toRenderMarkers = (map, maps) => {
-        let marker = new maps.Marker({
-            position: { lat: toLatitude, lng: toLongitude },
-            map,
-            title: 'To'
-        });
-        return marker;
-    };
+    shouldComponentUpdate(nextProps, nextState) {
+        if (
+            this.state.markerFromPosition.lat !== this.props.center.lat ||
+            this.state.fromAddress !== nextState.fromAddress ||
+            this.state.toAddress !== nextState.toAddress
+        ) {
+            return true
+        } else if (this.props.center.lat === nextProps.center.lat) {
+            return false
+        }
+    }
+
+
+    render() {
+        const AsyncMap = withScriptjs(
+            withGoogleMap(
+                props => (
+                    <GoogleMap google={this.props.google}
+                               defaultZoom={this.props.zoom}
+                               defaultCenter={{lat: 42.698334, lng: 23.319941}}
+                    >
+
+                        <InfoWindow
+                            position={{
+                                lat: (this.state.markerFromPosition.lat + 0.0014),
+                                lng: this.state.markerFromPosition.lng
+                            }}
+                        >
+                            <div>
+                                {this.state.fromAddress}
+                            </div>
+                        </InfoWindow>
+                        <InfoWindow
+                            position={{
+                                lat: (this.state.markerToPosition.lat + 0.0014),
+                                lng: this.state.markerToPosition.lng
+                            }}
+                        >
+                            <div>
+                                {this.state.toAddress}
+                            </div>
+                        </InfoWindow>
+                        <Marker google={this.props.google}
+                                draggable={false}
+                                position={{
+                                    lat: this.state.markerFromPosition.lat,
+                                    lng: this.state.markerFromPosition.lng
+                                }}
+                        />
+                        <Marker google={this.props.google}
+                                draggable={false}
+                                position={{lat: this.state.markerToPosition.lat, lng: this.state.markerToPosition.lng}}
+                        />
+                    </GoogleMap>
+                )
+            )
+        );
+        let map;
+        if (this.props.center.lat !== undefined) {
+            map = <div>
+                <AsyncMap
+                    googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM&libraries=places"
+                    loadingElement={
+                        <div style={{height: `100%`}}/>
+                    }
+                    containerElement={
+                        <div style={{height: this.props.height}}/>
+                    }
+                    mapElement={
+                        <div style={{height: `100%`}}/>
+                    }
+                />
+            </div>
+        } else {
+            map = <div style={{height: this.props.height}}/>
+        }
+        return (map)
+    }
+}
+
+function LoadMap(props) {
+    const showMap = props.showMap;
 
     if (showMap) {
-        return (
-            <div style={{ height: '50vh', width: '100%' }}>
-                <GoogleMapReact
-                    bootstrapURLKeys={{ key: "AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM" }}
-                    defaultCenter={{ lat: 42.698334, lng: 23.319941 }}
-                    defaultZoom={12}
-                    yesIWantToUseGoogleMapApiInternals
-                    onGoogleApiLoaded={({ map, maps }) => {
-                        fromRenderMarkers(map, maps);
-                        toRenderMarkers(map, maps)
-                    }}
-                >
-                </GoogleMapReact>
-            </div>
-        );
+        return <Map
+            google={this}
+            center={{lat:  42.698334, lng: 23.319941}}
+            from={{lat: props.fromLat, lng: props.fromLng}}
+            to={{lat: props.toLat, lng: props.toLng}}
+            height='400px'
+            zoom={15}
+        />
+    } else {
+        return <div></div>;
     }
-    else {
-        return(<div style={{ height: '50vh', width: '100%' }}>
-            <GoogleMapReact
-                bootstrapURLKeys={{ key: "AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM" }}
-                defaultCenter={{ lat: 42.698334, lng: 23.319941 }}
-                defaultZoom={12}
-                yesIWantToUseGoogleMapApiInternals
-            >
-            </GoogleMapReact>
-        </div>)
-            ;
-    }
-};
+}
 
-export default GoogleMaps;
+export {Map, LoadMap}
