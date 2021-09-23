@@ -5,12 +5,12 @@ import RadioButton from "./RadioButton"
 import validator from 'validator';
 import Swal from 'sweetalert2'
 import Typography from "@material-ui/core/Typography";
-import {MainContainer} from "./MainContainer";
-import {Form} from "./Form";
+import { MainContainer } from "./MainContainer";
+import { Form } from "./Form";
 import Button from "@material-ui/core/Button";
 import Table from "./Table";
 import Geocoder from 'react-native-geocoding';
-import {Map, LoadMap} from "./Map";
+import { Map, LoadMap } from "./Map";
 
 Geocoder.init("AIzaSyCjTOWTvU-3_qpW12GHY0V35EHcSzoPTIM");
 
@@ -88,7 +88,7 @@ class OrderSubmitForm extends React.Component {
     }
 
     validate = () => {
-        this.setState({isValid: true, disabled: false});
+        this.setState({ isValid: true, disabled: false });
 
         let nameError = "";
         let emailError = "";
@@ -116,13 +116,18 @@ class OrderSubmitForm extends React.Component {
             phoneError = "*Invalid phone number";
         }
 
-        if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
-            fromAddressNameError = "*Invalid address name";
-        }
+        // if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
+        //     fromAddressNameError = "*Invalid address name";
+        // }
 
 
-        if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
-            toAddressNameError = "*Invalid address name";
+        // if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
+        //     toAddressNameError = "*Invalid address name";
+        // }
+
+        if (this.state.fromAddressName != "" && this.state.toAddressName != "" && this.state.fromAddressName == this.state.toAddressName) {
+            fromAddressNameError = "*Same address name";
+            toAddressNameError = "*Same address name";
         }
 
         if (!validator.isNumeric(this.state.length) || this.state.length <= 0) {
@@ -141,22 +146,22 @@ class OrderSubmitForm extends React.Component {
             weightError = "*Invalid weight";
         }
 
-        this.setState({nameError: nameError});
-        this.setState({emailError: emailError});
-        this.setState({phoneError: phoneError});
-        this.setState({fromLatitudeError: fromLatitudeError});
-        this.setState({fromLongitudeError: fromLongitudeError});
-        this.setState({fromAddressNameError: fromAddressNameError});
-        this.setState({toLatitudeError: toLatitudeError});
-        this.setState({toLongitudeError: toLongitudeError});
-        this.setState({toAddressNameError: toAddressNameError});
-        this.setState({lengthError: lengthError});
-        this.setState({heightError: heightError});
-        this.setState({widthError: widthError});
-        this.setState({weightError: weightError});
+        this.setState({ nameError: nameError });
+        this.setState({ emailError: emailError });
+        this.setState({ phoneError: phoneError });
+        this.setState({ fromLatitudeError: fromLatitudeError });
+        this.setState({ fromLongitudeError: fromLongitudeError });
+        this.setState({ fromAddressNameError: fromAddressNameError });
+        this.setState({ toLatitudeError: toLatitudeError });
+        this.setState({ toLongitudeError: toLongitudeError });
+        this.setState({ toAddressNameError: toAddressNameError });
+        this.setState({ lengthError: lengthError });
+        this.setState({ heightError: heightError });
+        this.setState({ widthError: widthError });
+        this.setState({ weightError: weightError });
 
-        this.setState({isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError)});
-        this.setState({disabled: !this.state.isValid});
+        this.setState({ isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
+        this.setState({ disabled: !this.state.isValid });
     }
 
     orderIdHandler = arg => {
@@ -205,7 +210,7 @@ class OrderSubmitForm extends React.Component {
             fromAddressName: arg
         })
         this.validate();
-        this.setState({showFromMap: true});
+        this.setState({ showFromMap: true });
     }
 
     toLatitudeHandler = arg => {
@@ -227,7 +232,7 @@ class OrderSubmitForm extends React.Component {
             toAddressName: arg
         })
         this.validate();
-        this.setState({showToMap: true});
+        this.setState({ showToMap: true });
     }
 
     lengthHandler = arg => {
@@ -303,22 +308,6 @@ class OrderSubmitForm extends React.Component {
             deliveryType: this.state.radio.toUpperCase()
         }
 
-
-        let result = {
-            "Client name": this.state.name,
-            "Client email": this.state.email,
-            "Phone number": this.state.phone,
-            "From": this.state.fromAddressName,
-            "To": this.state.toAddressName,
-            "Length": this.state.length,
-            "Width": this.state.width,
-            "Height": this.state.height,
-            "Weight": this.state.weight,
-            "Tags": this.state.selected,
-            "Delivery type": this.state.radio.toUpperCase()
-        }
-
-
         fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
@@ -327,7 +316,7 @@ class OrderSubmitForm extends React.Component {
             body: JSON.stringify(orderInfo),
         }).then(r => {
             r.text().then(t => {
-                this.setState({orderId: t.substr(38,36)});
+                this.setState({ orderId: t.substr(38, 36) });
             });
             Swal.fire({
                 title: 'Your order was created!',
@@ -340,11 +329,23 @@ class OrderSubmitForm extends React.Component {
             }).then(value => {
                 if (value.isDismissed) {
                     Swal.fire({
-                        title: "Order ID: " + this.state.orderId + "\n" + displayOrderInfo(result),
+                        html: "<table align='center' height='100%'><tr><td align='left'><hr/>" + "<b>Order ID: </b>" + this.state.orderId
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Client name: </b>" + this.state.name
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Client email: </b>" + this.state.email
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Phone number: </b>" + this.state.phone
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>From address: </b>" + this.state.fromAddressName
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>To address: </b>" + this.state.toAddressName
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Length: </b>" + this.state.length
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Width: </b>" + this.state.width
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Height: </b>" + this.state.height
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Weight: </b>" + this.state.weight
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Tags: </b>" + this.state.selected
+                            + "<hr/></td></tr><tr><td align='left'>" + "<b>Delivery type: </b>" + this.state.radio.toUpperCase()
+                            + "<hr/></td></tr></table>",
                         icon: 'info',
                         iconColor: '#000000',
                         confirmButtonColor: '#000000',
-                        width: '900px',
+                        width: '700px',
                     })
                 }
             })
@@ -367,7 +368,7 @@ class OrderSubmitForm extends React.Component {
             selected.push(name)
         }
 
-        this.setState({selected})
+        this.setState({ selected })
     }
 
     render() {
@@ -380,37 +381,38 @@ class OrderSubmitForm extends React.Component {
                 }}>
                     <h1>ORDER</h1>
                     <TextClass value={this.state.name} fieldName={"Name"} handler={this.nameHandler.bind(this)}
-                               id="clientName"
-                               type="text"
+                        id="clientName"
+                        type="text"
                     />
-                    <Error props={this.state.nameError}/>
+                    <Error props={this.state.nameError} />
                     <TextClass value={this.state.email} fieldName={"Email"} handler={this.emailHandler.bind(this)}
-                               id="email"
-                               type="text"
+                        id="email"
+                        type="text"
                     />
-                    <Error props={this.state.emailError}/>
+                    <Error props={this.state.emailError} />
                     <TextClass value={this.state.phone} fieldName={"Phone"} handler={this.phoneHandler.bind(this)}
-                               id="phoneNumber"
-                               type="tel"
+                        id="phoneNumber"
+                        type="tel"
                     />
-                    <Error props={this.state.phoneError}/>
+                    <Error props={this.state.phoneError} />
                     <hr></hr>
 
-                    <br/>
+                    <br />
                     <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
                         this.fromAddressNameHandler(event);
                         Geocoder.from(event)
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({fromLatitude: location.lat, fromLongitude: location.lng});
+                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
 
                             })
                             .catch(error => {
                                 console.warn(error)
                             });
 
-                    }}/>
+                    }} />
+                    <Error props={this.state.fromAddressNameError} />
 
                     <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
                         this.toAddressNameHandler(event);
@@ -418,65 +420,66 @@ class OrderSubmitForm extends React.Component {
                             .then(json => {
                                 var location = json.results[0].geometry.location;
 
-                                this.setState({toLatitude: location.lat, toLongitude: location.lng});
+                                this.setState({ toLatitude: location.lat, toLongitude: location.lng });
 
                             }).catch(error => console.warn(error));
 
-                    }}/>
+                    }} />
+                    <Error props={this.state.toAddressNameError} />
 
                     <Button type="button"
-                            fullWidth
-                            variant="contained"
-                            disabled={!(this.state.showFromMap && this.state.showToMap)}
-                            onClick={() => this.setState({
-                                showMap: true,
-                                showFromMap: false,
-                                showToMap: false
-                            })}
-                            style={{
-                                background: "#0e0e0e",
-                                borderRadius: 5,
-                                boxShadow: '0 0px 5px rgba(0,0,0,0.3)',
-                                height: "100%",
-                                marginTop: '20px',
-                                marginBottom: '20px',
-                                padding: "10px",
-                                fontSize: "18px",
-                                width: "25%",
-                                color: "#f5f5f5"
-                            }}>
+                        fullWidth
+                        variant="contained"
+                        disabled={!(this.state.showFromMap && this.state.showToMap)}
+                        onClick={() => this.setState({
+                            showMap: true,
+                            showFromMap: false,
+                            showToMap: false
+                        })}
+                        style={{
+                            background: "#0e0e0e",
+                            borderRadius: 5,
+                            boxShadow: '0 0px 5px rgba(0,0,0,0.3)',
+                            height: "100%",
+                            marginTop: '20px',
+                            marginBottom: '20px',
+                            padding: "10px",
+                            fontSize: "18px",
+                            width: "25%",
+                            color: "#f5f5f5"
+                        }}>
                         Load map
                     </Button>
                     <LoadMap showMap={this.state.showMap} fromAddress={this.state.fromAddressName}
-                             toAddress={this.state.toAddressName} fromLat={this.state.fromLatitude}
-                             fromLng={this.state.fromLongitude} toLat={this.state.toLatitude}
-                             toLng={this.state.toLongitude}/>
+                        toAddress={this.state.toAddressName} fromLat={this.state.fromLatitude}
+                        fromLng={this.state.fromLongitude} toLat={this.state.toLatitude}
+                        toLng={this.state.toLongitude} />
 
                     <hr></hr>
 
 
-                    <br/>
+                    <br />
                     <TextClass value={this.state.length} fieldName={"Length"} handler={this.lengthHandler.bind(this)}
-                               label="length"
-                               type="text"/>
-                    <Error props={this.state.lengthError}/>
+                        label="length"
+                        type="text" />
+                    <Error props={this.state.lengthError} />
 
                     <TextClass value={this.state.height} fieldName={"Height"} handler={this.heightHandler.bind(this)}
-                               label="height"
-                               type="text"/>
-                    <Error props={this.state.heightError}/>
+                        label="height"
+                        type="text" />
+                    <Error props={this.state.heightError} />
 
-                    <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)}/>
+                    <TextClass value={this.state.width} fieldName={"Width"} handler={this.widthHandler.bind(this)} />
                     <Error props={this.state.widthError}
-                           label="width"
-                           type="text"/>
+                        label="width"
+                        type="text" />
 
                     <TextClass value={this.state.weight} fieldName={"Weight"} handler={this.weightHandler.bind(this)}
-                               label="weight"
-                               type="text"/>
-                    <Error props={this.state.weightError}/>
+                        label="weight"
+                        type="text" />
+                    <Error props={this.state.weightError} />
                     <hr></hr>
-                    <br/>
+                    <br />
                     <section>
                         <label style={{
                             fontSize: "18px"
@@ -500,9 +503,9 @@ class OrderSubmitForm extends React.Component {
                                                     <input style={{
                                                         marginLeft: "10%"
                                                     }}
-                                                           type="checkbox"
-                                                           onChange={() => this.tagsHandler(item.name)}
-                                                           selected={this.state.selected.includes(item.name)}/>
+                                                        type="checkbox"
+                                                        onChange={() => this.tagsHandler(item.name)}
+                                                        selected={this.state.selected.includes(item.name)} />
                                                     <span>{item.name}</span>
                                                 </label>
                                             )
@@ -514,7 +517,7 @@ class OrderSubmitForm extends React.Component {
                     </section>
 
                     <RadioButton radio={this.state.radio} fieldName={"Delivery Type"}
-                                 handler={this.deliveryTypeHandler.bind(this)}/>
+                        handler={this.deliveryTypeHandler.bind(this)} />
                     <Button type="submit"
                         fullWidth
                         variant="contained"
