@@ -296,7 +296,8 @@ class OrderSubmitForm extends React.Component {
             deliveryType: this.state.radio.toUpperCase()
         }
 
-        fetch('http://localhost:8080/orders', {
+        //change to localhost when locally testing
+        fetch('http://order-Publi-DVY752SUI77Y-1625392201.eu-west-1.elb.amazonaws.com/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
