@@ -397,32 +397,40 @@ class OrderSubmitForm extends React.Component {
                     <hr></hr>
 
                     <br/>
-                    <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
-                        this.fromAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
 
-                                this.setState({fromLatitude: location.lat, fromLongitude: location.lng});
+                    <table style={{width: "100%"}}>
+                        <tr>
+                            <td>
+                                <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
+                                    this.fromAddressNameHandler(event);
+                                    Geocoder.from(event)
+                                        .then(json => {
+                                            var location = json.results[0].geometry.location;
 
-                            })
-                            .catch(error => {
-                                console.warn(error)
-                            });
+                                            this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
 
-                    }}/>
+                                        })
+                                        .catch(error => { console.log(2222); console.warn(error) });
 
-                    <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
-                        this.toAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
+                                }} />
+                                <Error props={this.state.fromAddressNameError} />
+                            </td>
+                            <td>
+                                <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+                                    this.toAddressNameHandler(event);
+                                    Geocoder.from(event)
+                                        .then(json => {
+                                            var location = json.results[0].geometry.location;
 
-                                this.setState({toLatitude: location.lat, toLongitude: location.lng});
+                                            this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
+                                        })
+                                        .catch(error => console.warn(error));
 
-                            }).catch(error => console.warn(error));
-
-                    }}/>
+                                }} />
+                                <Error props={this.state.toAddressNameError} />
+                            </td>
+                        </tr>
+                    </table>
 
                     <Button type="button"
                             fullWidth
