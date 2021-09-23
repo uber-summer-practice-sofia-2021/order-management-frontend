@@ -35,11 +35,7 @@ class OrderSubmitForm extends React.Component {
             nameError: "",
             emailError: "",
             phoneError: "",
-            fromLatitudeError: "",
-            fromLongitudeError: "",
             fromAddressNameError: "",
-            toLatitudeError: "",
-            toLongitudeError: "",
             toAddressNameError: "",
             lengthError: "",
             heightError: "",
@@ -93,11 +89,7 @@ class OrderSubmitForm extends React.Component {
         let nameError = "";
         let emailError = "";
         let phoneError = "";
-        let fromLatitudeError = "";
-        let fromLongitudeError = "";
         let fromAddressNameError = "";
-        let toLatitudeError = "";
-        let toLongitudeError = "";
         let toAddressNameError = "";
         let lengthError = "";
         let heightError = "";
@@ -119,7 +111,6 @@ class OrderSubmitForm extends React.Component {
         // if (!/^[A-Za-z0-9 ]+$/.test(this.state.fromAddressName)) {
         //     fromAddressNameError = "*Invalid address name";
         // }
-
 
         // if (!/^[A-Za-z0-9 ]+$/.test(this.state.toAddressName)) {
         //     toAddressNameError = "*Invalid address name";
@@ -146,22 +137,19 @@ class OrderSubmitForm extends React.Component {
             weightError = "*Invalid weight";
         }
 
-        this.setState({ nameError: nameError });
-        this.setState({ emailError: emailError });
-        this.setState({ phoneError: phoneError });
-        this.setState({ fromLatitudeError: fromLatitudeError });
-        this.setState({ fromLongitudeError: fromLongitudeError });
-        this.setState({ fromAddressNameError: fromAddressNameError });
-        this.setState({ toLatitudeError: toLatitudeError });
-        this.setState({ toLongitudeError: toLongitudeError });
-        this.setState({ toAddressNameError: toAddressNameError });
-        this.setState({ lengthError: lengthError });
-        this.setState({ heightError: heightError });
-        this.setState({ widthError: widthError });
-        this.setState({ weightError: weightError });
+        this.setState({nameError: nameError});
+        this.setState({emailError: emailError});
+        this.setState({phoneError: phoneError});
+        this.setState({fromAddressNameError: fromAddressNameError});
+        this.setState({toAddressNameError: toAddressNameError});
+        this.setState({lengthError: lengthError});
+        this.setState({heightError: heightError});
+        this.setState({widthError: widthError});
+        this.setState({weightError: weightError});
 
-        this.setState({ isValid: !(nameError || fromAddressNameError || toAddressNameError || emailError || phoneError || lengthError || heightError || widthError || weightError) });
-        this.setState({ disabled: !this.state.isValid });
+        this.setState({isValid: !(nameError || this.state.fromAddressName === this.state.toAddressName || emailError || phoneError || lengthError || heightError || widthError || weightError)});
+        this.setState({disabled: !this.state.isValid});
+
     }
 
     orderIdHandler = arg => {
@@ -397,36 +385,39 @@ class OrderSubmitForm extends React.Component {
                     <Error props={this.state.phoneError} />
                     <hr></hr>
 
-                    <br />
-                    <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
-                        this.fromAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
+<table style={{width: "100%"}}>
+    <tr>
+        <td>
+            <TextClass value={this.state.fromAddressName} fieldName={"From address"} handler={(event) => {
+                this.fromAddressNameHandler(event);
+                Geocoder.from(event)
+                    .then(json => {
+                        var location = json.results[0].geometry.location;
 
-                                this.setState({ fromLatitude: location.lat, fromLongitude: location.lng });
+                        this.setState({ fromLatitude: location.lat, fromLongitude: location.lng, fromMarkerShown: true });
 
-                            })
-                            .catch(error => {
-                                console.warn(error)
-                            });
+                    })
+                    .catch(error => { console.log(2222); console.warn(error) });
 
-                    }} />
-                    <Error props={this.state.fromAddressNameError} />
+            }} />
+            <Error props={this.state.fromAddressNameError} />
+        </td>
+        <td>
+            <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
+                this.toAddressNameHandler(event);
+                Geocoder.from(event)
+                    .then(json => {
+                        var location = json.results[0].geometry.location;
 
-                    <TextClass value={this.state.toAddressName} fieldName={"To address"} handler={(event) => {
-                        this.toAddressNameHandler(event);
-                        Geocoder.from(event)
-                            .then(json => {
-                                var location = json.results[0].geometry.location;
+                        this.setState({ toLatitude: location.lat, toLongitude: location.lng, toMarkerShown: true });
+                    })
+                    .catch(error => console.warn(error));
 
-                                this.setState({ toLatitude: location.lat, toLongitude: location.lng });
-
-                            }).catch(error => console.warn(error));
-
-                    }} />
-                    <Error props={this.state.toAddressNameError} />
-
+            }} />
+            <Error props={this.state.toAddressNameError} />
+        </td>
+    </tr>
+</table>
                     <Button type="button"
                         fullWidth
                         variant="contained"
